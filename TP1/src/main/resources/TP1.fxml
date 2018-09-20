@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import tp1.partie1.ControllerP1?>
+<?import tp1.partie2.ControllerP2?>
+<?import tp1.partie3.ControllerP3?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml" minHeight="300">
+    <VBox HBox.hgrow="ALWAYS">
+        <ControllerP1 prefWidth="600" prefHeight="250" fx:id="partie1"/>
+        <ControllerP3 prefWidth="600" minHeight="100" VBox.vgrow="ALWAYS" fx:id="partie3"/>
+    </VBox>
+    <ControllerP2 HBox.hgrow="ALWAYS" prefWidth="400" prefHeight="400" fx:id="partie2"/>
+</fx:root>

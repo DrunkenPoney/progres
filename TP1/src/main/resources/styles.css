@@ -1,0 +1,16 @@
+.text-field.error {
+    -fx-focus-color: red;
+    -fx-faint-focus-color: #ff000022;
+    -fx-border-width: 1px;
+    -fx-border-color: red;
+    -fx-border-style: solid;
+}
+
+.text-field:readonly {
+    -fx-focus-color: #33333333;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field.error:focused {
+    -fx-border-style: none;
+}
