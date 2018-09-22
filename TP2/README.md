@@ -25,22 +25,40 @@
  - L’interface ne doit pas geler en aucun cas. Pour cela, utiliser les threads comme dans le TP1.
  - Vous devez aussi ajouter une fonctionnalité créative et avec un niveau de complexité de 5e session.
 
-![Preview1](https://raw.githubusercontent.com/DrunkenPoney/progres/master/TP2/preview1.png)
-![Preview2](https://raw.githubusercontent.com/DrunkenPoney/progres/master/TP2/preview2.png)
-
 <hr>
 
 ### <u>Planification</u>
 
 #### Tâches
  - [ ] **Interface utilisateur (vue) :**
-    - [ ] Bob
+    - [ ] Informations de connexion
+        - [ ] IP Distant
+        - [ ] Port Distant
+        - [ ] Nom d'utilisateur
+        - [ ] Bouton de connexion
+    - [ ] Zone des messages (ListView ou Text?)
+    - [ ] Zone des logs (ListView ou Text?)
+    - [ ] Envoi de message
+    - [ ] Envoi de fichier
+    - [ ] Autres éléments
  - [ ] **Modèle (Serveur) :**
-    - [ ] Bob
+    - [ ] Ouverture d'un port dédié à la réception
+    - [ ] Ouverture d'un port dédié à l'envoi
+    - [ ] Autres
  - [ ] **Modèle (Client) :**
-    - [ ] Bob
- - [ ] **Contrôleur :**
-    - [ ] Bob
+    - [ ] Connexion au serveur
+    - [ ] Envoi de messages
+    - [ ] Envoi de fichiers
+    - [ ] Réception de fichiers
+    - [ ] Réception de messages
+ - [ ] **Contrôleur**
+
+<hr>
+
+### <u>Exemples de résultat attendu</u>
+
+![Preview1](https://raw.githubusercontent.com/DrunkenPoney/progres/master/TP2/preview1.png)
+![Preview2](https://raw.githubusercontent.com/DrunkenPoney/progres/master/TP2/preview2.png)
 
 <hr>
 
