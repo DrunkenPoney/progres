@@ -25,5 +25,10 @@ hs_err_pid*
 */target/
 */out/
 */.idea/
+*/.settings/
+*.code-workspace
 *.iml
-
+temp.*
+tmp.*
+tmp/
+temp/

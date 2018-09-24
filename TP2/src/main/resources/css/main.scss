@@ -1,0 +1,28 @@
+@import 'fonts';
+
+$main-color: #0C9;
+$background: #222;
+
+* {
+    -fx-base: $background;
+    -fx-base-fill: darken($main-color, 10%);
+    -fx-text-fill: $main-color;
+    -fx-font-family: 'Open Sans';
+    -fx-prompt-text-fill: desaturate(darken($main-color, 15%), 5%);
+}
+
+.text-field {
+    -fx-font-family: 'Montserrat';
+    -fx-padding: 0;
+    
+}
+
+.button {
+    cursor: pointer;
+}
+
+.title {
+    -fx-font-family: 'Luckiest Guy';
+    -fx-font-weight: 900;
+    -fx-font-size: 20px;
+}

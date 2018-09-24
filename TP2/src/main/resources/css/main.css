@@ -1,0 +1,166 @@
+/********************** Open Sans **********************/
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 600;
+  font-style: normal;
+  src: url("../fonts/Open_Sans/OpenSans-Bold.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 600;
+  font-style: italic;
+  src: url("../fonts/Open_Sans/OpenSans-BoldItalic.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 800;
+  font-style: normal;
+  src: url("../fonts/Open_Sans/OpenSans-ExtraBold.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 800;
+  font-style: italic;
+  src: url("../fonts/Open_Sans/OpenSans-ExtraBoldItalic.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 400;
+  font-style: italic;
+  src: url("../fonts/Open_Sans/OpenSans-Italic.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 200;
+  font-style: normal;
+  src: url("../fonts/Open_Sans/OpenSans-Light.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 200;
+  font-style: italic;
+  src: url("../fonts/Open_Sans/OpenSans-LightItalic.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../fonts/Open_Sans/OpenSans-Regular.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 600;
+  font-style: normal;
+  src: url("../fonts/Open_Sans/OpenSans-SemiBold.ttf"); }
+@font-face {
+  font-family: "Open Sans";
+  font-weight: 600;
+  font-style: italic;
+  src: url("../fonts/Open_Sans/OpenSans-SemiBoldItalic.ttf"); }
+/********************** Montserrat *********************/
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 100;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Thin.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 100;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-ThinItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 200;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-ExtraLight.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 200;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-ExtraLightItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 300;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Light.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 300;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-LightItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Regular.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-Italic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Medium.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-MediumItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-SemiBold.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-SemiBoldItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Bold.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-BoldItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 800;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-ExtraBold.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 800;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-ExtraBoldItalic.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 900;
+  font-style: normal;
+  src: url("../fonts/Montserrat/Montserrat-Black.ttf"); }
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 900;
+  font-style: italic;
+  src: url("../fonts/Montserrat/Montserrat-BlackItalic.ttf"); }
+/********************* Luckiest Guy ********************/
+@font-face {
+  font-family: 'Luckiest Guy';
+  src: url("../fonts/Luckiest_Guy/LuckiestGuy-Regular.ttf"); }
+* {
+  -fx-base: #222;
+  -fx-base-fill: #009973;
+  -fx-text-fill: #0C9;
+  -fx-font-family: 'Open Sans';
+  -fx-prompt-text-fill: #037c5e; }
+
+.text-field {
+  -fx-font-family: 'Montserrat';
+  -fx-padding: 0; }
+
+.button {
+  cursor: pointer; }
+
+.title {
+  -fx-font-family: 'Luckiest Guy';
+  -fx-font-weight: 900;
+  -fx-font-size: 20px; }
+
+/*# sourceMappingURL=main.css.map */
