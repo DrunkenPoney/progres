@@ -163,6 +163,9 @@
   -fx-font-weight: 900;
   -fx-font-size: 20px; }
 
+.invalid {
+  -fx-effect: innershadow(one-pass-box, #A00, 1, 25, 0, 0); }
+
 .ip-address {
   -fx-text-align: center; }
 

@@ -1,15 +1,16 @@
 package tp2;
 
 import javafx.scene.text.Font;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 
 public final class Utils {
@@ -43,5 +44,9 @@ public final class Utils {
 			}
 			return files == null ? Stream.of(path) : files;
 		});
+	}
+	
+	public static <T> boolean isAny(T obj, T... list) {
+		return ArrayUtils.contains(list, obj);
 	}
 }

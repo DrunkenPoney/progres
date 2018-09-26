@@ -14,7 +14,6 @@ $background: #222;
 .text-field {
     -fx-font-family: 'Montserrat';
     -fx-padding: 0;
-    
 }
 
 .button {
@@ -25,4 +24,11 @@ $background: #222;
     -fx-font-family: 'Luckiest Guy';
     -fx-font-weight: 900;
     -fx-font-size: 20px;
+}
+
+.invalid {
+    //-fx-border: 1px;
+    //-fx-border-color: #900;
+    //-fx-border-style: solid;
+    -fx-effect: innershadow(one-pass-box, #A00, 1, 25, 0, 0);
 }

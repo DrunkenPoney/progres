@@ -65,7 +65,6 @@ public class ByteTextField extends ImprovedTextField {
 				} else {
 					if (newValue.length() > 0 && Integer.parseInt(newValue) > 0xFF) {
 						setValid(false);
-						setText(oldValue);
 					} else {
 						setValid(true);
 						if (newValue.length() == 3 && getNext() != null) {
@@ -87,6 +86,14 @@ public class ByteTextField extends ImprovedTextField {
 		});
 		
 		binaryModeProperty.addListener((observable, oldValue, newValue) -> initStyle(newValue));
+	}
+	
+	public int getValue() {
+		return valueProperty.get();
+	}
+	
+	public void setValue(int value) {
+		textProperty().set(String.valueOf(value));
 	}
 	
 	protected void initStyle(boolean binaryMode) {

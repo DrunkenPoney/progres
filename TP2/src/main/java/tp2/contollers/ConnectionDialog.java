@@ -37,10 +37,13 @@ public class ConnectionDialog extends Dialog {
 	
 	@FXML
 	private void initialize() {
+		setOnCloseRequest(event -> close());
+		
 		port.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.matches("^\\d{0,5}$") || (newValue.length() > 0 && Integer.parseInt(newValue) > 65535))
 				port.setText(oldValue);
 		});
+		
 	}
 	
 	
