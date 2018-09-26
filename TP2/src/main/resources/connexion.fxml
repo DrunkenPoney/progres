@@ -11,7 +11,7 @@
 
 
 <?import tp2.view.ByteTextField?>
-<fx:root stylesheets="@css/connexion.css" type="javafx.scene.control.DialogPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root stylesheets="css/connexion.css" type="javafx.scene.control.DialogPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <header>
       <Label alignment="CENTER" styleClass="title" text="Label" textAlignment="CENTER" />
    </header>

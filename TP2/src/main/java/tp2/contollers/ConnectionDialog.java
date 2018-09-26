@@ -8,6 +8,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import tp2.view.ByteTextField;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ConnectionDialog extends Dialog {
@@ -25,7 +26,7 @@ public class ConnectionDialog extends Dialog {
 	public ConnectionDialog() throws IOException {
 		super();
 		DialogPane dialogPane = new DialogPane();
-		dialogPane.getStylesheets().add(getClass().getResource("/css/connexion.css").getPath());
+		dialogPane.getStylesheets().add(getClass().getResource("/css/connexion.css").toExternalForm());
 		this.setDialogPane(dialogPane);
 		
 		FXMLLoader loader = new FXMLLoader();

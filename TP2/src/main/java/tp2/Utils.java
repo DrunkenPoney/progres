@@ -2,7 +2,9 @@ package tp2;
 
 import javafx.scene.text.Font;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +28,8 @@ public final class Utils {
 		URI uri = Utils.class.getResource("/").toURI();
 		if ("jar".equals(uri.getPath()))
 			return FileSystems.newFileSystem(uri, Collections.emptyMap(), Utils.class.getClassLoader()).getPath(p);
-		return Paths.get(uri.getPath());
+		System.out.println(uri.getScheme());
+		return new File(uri).toPath();
 	}
 	
 	public static Stream<Path> readdirDeep(Path dir) throws IOException {

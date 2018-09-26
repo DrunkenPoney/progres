@@ -26,9 +26,9 @@ public class MainController extends Application {
 		
 		primaryStage.setScene(new Scene(root));
 		primaryStage.setTitle("TP2 - Live Chat");
+		primaryStage.setOnCloseRequest(windowEvent -> primaryStage.close());
 		primaryStage.show();
 		connectionDialog.showAndWait();
-		
 	}
 	
 	@FXML
