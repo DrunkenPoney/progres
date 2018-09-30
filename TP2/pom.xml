@@ -48,9 +48,25 @@
             <version>3.2.1</version>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-            <version>3.8.1</version>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.mongodb</groupId>-->
+            <!--<artifactId>mongodb-driver-sync</artifactId>-->
+            <!--<version>3.8.1</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.mongodb.morphia</groupId>
+            <artifactId>morphia</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.2.8</version>
         </dependency>
     </dependencies>
     <build>
@@ -78,7 +94,6 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <useBourbon>true</useBourbon>
                             <sassSourceDirectory>${project.basedir}/src</sassSourceDirectory>
                         </configuration>
                     </execution>
@@ -204,6 +219,14 @@
             <id>maven-central-2</id>
             <name>Maven Central</name>
             <url>https://mvnrepository.com/repos/central</url>
+        </repository>
+        <repository>
+            <id>spring-libs-release</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/libs-release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <properties>

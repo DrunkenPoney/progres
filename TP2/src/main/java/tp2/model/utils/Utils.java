@@ -1,18 +1,21 @@
-package tp2;
+package tp2.model.utils;
 
 import javafx.scene.text.Font;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.validator.Validator;
+import org.apache.commons.validator.routines.IntegerValidator;
+import org.apache.commons.validator.util.ValidatorUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 public final class Utils {
@@ -51,5 +54,9 @@ public final class Utils {
 	
 	public static <T> boolean isAny(T obj, T... list) {
 		return ArrayUtils.contains(list, obj);
+	}
+	
+	public static boolean isValidPort(Integer port) {
+		return IntegerValidator.getInstance().isInRange(port, Constants.MIN_PORT_NUMBER, Constants.MAX_PORT_NUMBER);
 	}
 }

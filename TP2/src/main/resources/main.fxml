@@ -6,8 +6,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns="http://javafx.com/javafx"
+<AnchorPane stylesheets="css/main.css" xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="tp2.contollers.MainController"
             prefHeight="600.0" prefWidth="1000.0">
-</StackPane>
+</AnchorPane>
