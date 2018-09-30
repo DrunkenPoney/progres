@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import tp2.model.db.documents.ClientModel;
 import tp2.model.db.internals.exceptions.InvalidAttributeException;
 
-public class LocalClientCollection extends ClientCollection {
+public class LocalClientCollection extends ClientsCollection {
 	private final ClientModel localClient;
 	
 	LocalClientCollection(@NotNull String clientName,
@@ -25,19 +25,15 @@ public class LocalClientCollection extends ClientCollection {
 	}
 	
 	public void saveLocalClient() {
-//		DATASTORE.update().set("name", getLocalClient().getName())
-//		        .set("address", getLocalClient().getAddress())
-//		        .set("port", getLocalClient().getPort())
-//		        .set("attributes", getLocalClient().getAttributes());
-		DATASTORE.save(getLocalClient());
+		publish(getLocalClient());
 	}
 	
 	public void connect() {
-		if(!isConnected(getLocalClient()))
+		if (!isConnected(getLocalClient()))
 			saveLocalClient();
 	}
 	
 	public void disconnect() {
-		DATASTORE.delete(getLocalClient());
+		drop(getLocalClient());
 	}
 }

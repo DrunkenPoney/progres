@@ -9,7 +9,10 @@ import java.net.ServerSocket;
 import java.nio.channels.AsynchronousServerSocketChannel;
 
 public final class Accessors {
-	private static ClientCollection clientCollection = new ClientCollection();
+	// TODO single thread pool => prevent db tasks from executing simultaneously
+	// TODO GroupsCollection accessor
+	
+	private static ClientsCollection clientCollection = new ClientsCollection();
 	
 	public static boolean isLocalClientInitialized() {
 		return clientCollection instanceof LocalClientCollection;
@@ -38,7 +41,7 @@ public final class Accessors {
 			                                             socket.getPort());
 	}
 	
-	public static ClientCollection getClientCollection() {
+	public static ClientsCollection getClientCollection() {
 		return clientCollection;
 	}
 }

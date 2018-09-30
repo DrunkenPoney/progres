@@ -14,9 +14,9 @@ import java.util.Set;
 import static com.mongodb.client.model.Filters.eq;
 
 @SuppressWarnings("unused")
-public class ClientCollection extends BaseCollection<ClientModel> {
+public class ClientsCollection extends BaseCollection<ClientModel> {
 	
-	ClientCollection() {
+	ClientsCollection() {
 		super(ClientModel.class);
 	}
 	
