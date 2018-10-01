@@ -1,4 +1,4 @@
-package tp2.model.utils;
+package tp2.models.utils;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,12 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 public class I18n {
 	private static final Map<String, I18n> defaults = new HashMap<>();
+	
+	static {
+		if (System.getProperty("user.language").equalsIgnoreCase("fr"))
+			Locale.setDefault(Locale.CANADA_FRENCH);
+		else Locale.setDefault(Locale.CANADA);
+	}
 	
 	private final ResourceBundle      bundle;
 	private final Map<String, String> refs;
@@ -38,10 +44,10 @@ public class I18n {
 	@NotNull
 	private Map<String, String> init() {
 		return Collections.list(bundle.getKeys())
-				.stream()
-				.filter(key -> startsWithIgnoreCase(key, prefix))
-				.map(key -> Map.entry(stripStart(removeStartIgnoreCase(key, prefix), "."), key))
-				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+		                  .stream()
+		                  .filter(key -> startsWithIgnoreCase(key, prefix))
+		                  .map(key -> Map.entry(stripStart(removeStartIgnoreCase(key, prefix), "."), key))
+		                  .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 	
 	private I18n updated() {

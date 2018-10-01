@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
-import tp2.model.utils.Utils;
+import tp2.models.utils.Utils;
 import tp2.view.ByteTextField;
 
 import java.io.IOException;

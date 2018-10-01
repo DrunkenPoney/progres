@@ -1,15 +1,12 @@
-package tp2.model.db.collections;
+package tp2.models.db.collections;
 
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tp2.model.db.internals.BaseCollection;
-import tp2.model.utils.Constants;
-import tp2.model.db.documents.ClientModel;
+import tp2.models.db.internals.BaseCollection;
+import tp2.models.db.documents.ClientModel;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.mongodb.client.model.Filters.eq;
 

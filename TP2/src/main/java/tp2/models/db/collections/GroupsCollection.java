@@ -1,7 +1,7 @@
-package tp2.model.db.collections;
+package tp2.models.db.collections;
 
-import tp2.model.db.documents.GroupModel;
-import tp2.model.db.internals.BaseCollection;
+import tp2.models.db.documents.GroupModel;
+import tp2.models.db.internals.BaseCollection;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +24,8 @@ public class GroupsCollection extends BaseCollection<GroupModel> {
 	public GroupModel refresh(GroupModel group) {
 		try {
 			GroupModel model = queuedGet(query().field("_id").equal(group.getObjectId())).get();
-			group.setMembers(model.getMembers());
+			group.getMembers().clear();
+			group.addMembers(model.getMembers());
 			group.setName(model.getName());
 			return group;
 		} catch (InterruptedException | ExecutionException e) {

@@ -1,4 +1,4 @@
-package tp2.model.db.internals.exceptions;
+package tp2.models.db.internals.exceptions;
 
 public abstract class ValidationException extends Exception {
 	public ValidationException() {

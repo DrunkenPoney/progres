@@ -1,13 +1,13 @@
-package tp2.model.db.internals;
+package tp2.models.db.internals;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
-import tp2.model.utils.Constants;
+import tp2.models.utils.Constants;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -46,8 +46,8 @@ public abstract class BaseCollection<TDocument extends BaseDocumentModel> {
 		return EXECUTOR.submit(() -> DATASTORE.delete(doc));
 	}
 	
-	protected Future<Key<TDocument>> publish(TDocument doc) {
-		return EXECUTOR.submit(() -> DATASTORE.save(doc));
+	protected Future<ObjectId> publish(TDocument doc) {
+		return EXECUTOR.submit(() -> (ObjectId) DATASTORE.save(doc).getId());
 	}
 	
 	protected Future<TDocument> queuedGet(@NotNull Query<TDocument> query) {

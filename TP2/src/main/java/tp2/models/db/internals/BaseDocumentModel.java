@@ -1,10 +1,13 @@
-package tp2.model.db.internals;
+package tp2.models.db.internals;
 
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.Id;
 
-public abstract class BaseDocumentModel {
+import java.io.Serializable;
+
+public abstract class BaseDocumentModel implements Serializable {
+	private static final long serialVersionUID = 8120070238924755152L;
 	
 	@Id
 	private final ObjectId id;
@@ -24,7 +27,6 @@ public abstract class BaseDocumentModel {
 	public String getId() {
 		return getObjectId().toHexString();
 	}
-	
 	
 	@Override
 	@SuppressWarnings("ConstantConditions")

@@ -1,6 +1,6 @@
-package tp2.model.db.internals.exceptions;
+package tp2.models.db.internals.exceptions;
 
-import static tp2.model.utils.I18n.messages;
+import static tp2.models.utils.I18n.messages;
 
 public class InvalidDocumentException extends ValidationException {
 	private static final String I18N_ERROR_MESSAGE_KEY = "error.invalid.document";

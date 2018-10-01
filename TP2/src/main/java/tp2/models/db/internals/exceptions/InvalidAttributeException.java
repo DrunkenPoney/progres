@@ -1,10 +1,10 @@
-package tp2.model.db.internals.exceptions;
+package tp2.models.db.internals.exceptions;
 
 import org.jetbrains.annotations.NotNull;
-import tp2.model.utils.I18n;
+import tp2.models.utils.I18n;
 
 import static java.lang.String.format;
-import static tp2.model.utils.I18n.messages;
+import static tp2.models.utils.I18n.messages;
 
 @SuppressWarnings("unused")
 public class InvalidAttributeException extends ValidationException {
