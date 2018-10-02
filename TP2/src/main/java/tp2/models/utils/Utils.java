@@ -14,9 +14,10 @@ import java.net.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -110,30 +111,28 @@ public final class Utils {
 		}
 	}
 	
-	public static void describe(String title, Object obj, int depth) {
-		try { // TODO implement depth
-			Function<Map.Entry<String, String>, String> mapper = entry -> {
-				return FG_BRIGHT_GREEN.wrap(entry.getKey())
-				       + FG_BRIGHT_YELLOW.wrap(" => ")
-				       + FG_BRIGHT_CYAN.wrap(entry.getValue());
-			};
-			System.out.println();
-			System.out.println(FG_BRIGHT_MAGENTA.wrap(title)
-			                   + FG_BRIGHT_YELLOW.wrap("\n   \u21b3 ")
-			                   + BeanUtils.describe(obj)
-			                              .entrySet()
-			                              .stream()
-			                              .map(mapper)
-			                              .collect(Collectors.joining(FG_BRIGHT_YELLOW.wrap("\n   \u21b3 "))));
-			System.out.println();
-		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			System.err.printf("Couldn't describe %s > %s: %s",
-			                  obj, e.getClass().getName(), e.getMessage());
-		}
+	public static <O, R extends O> List<R> cast(Class<R> clazz, Collection<O> objs) {
+		return objs.stream().map(clazz::cast).collect(Collectors.toList());
 	}
 	
-	private static String describe(Object obj, int depth, int maxDepth) {
-		// TODO
-		return null;
+	@SafeVarargs
+	public static <O, R extends O> List<R> cast(Class<R> clazz, O... objs) {
+		return cast(clazz, Arrays.asList(objs));
 	}
+	
+	@SafeVarargs
+	public static <O> boolean same(Collection<O> l1, Collection<O> l2, Collection<O>... others) {
+		return (l1 == l2 || l1.equals(l2)
+		        || (l1.size() == l2.size() && l1.containsAll(l2)))
+		       && (others.length == 0 || same(l2, others[0], shift(others)));
+	}
+	
+	public static <O> O[] pop(O[] arr) {
+		return ArrayUtils.remove(arr, arr.length - 1);
+	}
+	
+	public static <O> O[] shift(O[] arr) {
+		return ArrayUtils.remove(arr, 0);
+	}
+	
 }

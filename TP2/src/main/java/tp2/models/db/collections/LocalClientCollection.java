@@ -1,51 +1,57 @@
 package tp2.models.db.collections;
 
-import org.bson.types.ObjectId;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import static tp2.models.db.collections.Accessors.getGroupsCollection;
 
 public class LocalClientCollection extends ClientsCollection {
 	private final ClientModel localClient;
 	
 	LocalClientCollection(@NotNull String clientName,
 	                      @NotNull String address,
-	                      int port) throws InvalidAttributeException, ExecutionException, InterruptedException {
+	                      int port) throws InvalidAttributeException {
 		this(new ClientModel(clientName, address, port));
 	}
 	
-	private LocalClientCollection(@NotNull ClientModel model) throws ExecutionException, InterruptedException {
+	private LocalClientCollection(@NotNull ClientModel model) {
 		super();
 		localClient = model;
-		connect().get();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			try {
-				disconnect().get();
-			} catch (InterruptedException | ExecutionException e) {
-				throw new RuntimeException(e);
-			}
-		}));
+		connect();
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> Flowable
+				.fromIterable(getGroupsCollection().list())
+				.filter(group -> group.getMembers().contains(localClient))
+				.parallel()
+				.runOn(Schedulers.io())
+				.doOnNext(group -> group.removeMembers(localClient))
+				.doOnNext(group -> {
+					if (group.getMembers().size() > 0)
+						getGroupsCollection().save(group);
+					else getGroupsCollection().delete(group);
+				})
+				.sequential()
+				.doOnTerminate(this::disconnect)
+				.subscribe()));
 	}
 	
 	public ClientModel getLocalClient() {
 		return this.localClient;
 	}
 	
-	public Future<ObjectId> saveLocalClient() {
-		return publish(getLocalClient());
+	public ClientModel saveLocalClient() {
+		return super.save(getLocalClient());
 	}
 	
-	public Future<?> connect() {
-		if (!isConnected(getLocalClient()))
-			return saveLocalClient();
-		return new FutureTask<>(this::getLocalClient);
+	public ClientModel connect() {
+		return isConnected(getLocalClient())
+		       ? getLocalClient()
+		       : saveLocalClient();
 	}
 	
-	public Future<?> disconnect() {
-		return drop(getLocalClient());
+	public boolean disconnect() {
+		return getDatastore().delete(getLocalClient()).wasAcknowledged();
 	}
 }

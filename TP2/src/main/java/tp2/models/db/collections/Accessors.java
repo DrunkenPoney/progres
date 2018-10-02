@@ -2,14 +2,10 @@ package tp2.models.db.collections;
 
 import org.jetbrains.annotations.NotNull;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
-import tp2.models.utils.Utils;
 
 import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutionException;
 
 public final class Accessors {
-	// TODO single thread pool => prevent db tasks from executing simultaneously
-	
 	private static GroupsCollection  groupsCollection  = new GroupsCollection();
 	private static ClientsCollection clientsCollection = new ClientsCollection();
 	
@@ -18,14 +14,13 @@ public final class Accessors {
 	}
 
 	public static void initLocalClient(@NotNull String clientName,
-	                                   @NotNull InetSocketAddress socket) throws InvalidAttributeException, ExecutionException, InterruptedException {
-		Utils.describe(clientName + " (" + socket.getAddress().getHostAddress() + ")", socket.getAddress());
+	                                   @NotNull InetSocketAddress socket) throws InvalidAttributeException {
 		if (isLocalClientInitialized()) {
 			((LocalClientCollection) clientsCollection).getLocalClient().setName(clientName);
 			((LocalClientCollection) clientsCollection).getLocalClient()
 			                                           .setAddress(socket.getAddress().getHostAddress());
 			((LocalClientCollection) clientsCollection).getLocalClient().setPort(socket.getPort());
-			((LocalClientCollection) clientsCollection).saveLocalClient().get();
+			((LocalClientCollection) clientsCollection).saveLocalClient();
 		} else
 			clientsCollection = new LocalClientCollection(clientName,
 			                                              socket.getAddress().getHostAddress(),

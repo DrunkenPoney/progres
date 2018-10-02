@@ -6,11 +6,11 @@ import org.mongodb.morphia.annotations.Id;
 
 import java.io.Serializable;
 
-public abstract class BaseDocumentModel implements Serializable {
+public abstract class BaseDocumentModel<DOC extends BaseDocumentModel<DOC>> implements Serializable {
 	private static final long serialVersionUID = 8120070238924755152L;
 	
 	@Id
-	private final ObjectId id;
+	private ObjectId id;
 	
 	protected BaseDocumentModel(@NotNull ObjectId id) {
 		this.id = id;
@@ -20,13 +20,15 @@ public abstract class BaseDocumentModel implements Serializable {
 		this.id = null;
 	}
 	
-	public ObjectId getObjectId() {
+	public ObjectId getId() {
 		return this.id;
 	}
 	
-	public String getId() {
-		return getObjectId().toHexString();
+	void setId(@NotNull ObjectId id) {
+		this.id = id;
 	}
+	
+	public abstract boolean isExactSame(DOC doc1);
 	
 	@Override
 	@SuppressWarnings("ConstantConditions")

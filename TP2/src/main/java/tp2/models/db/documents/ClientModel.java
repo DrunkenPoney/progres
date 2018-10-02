@@ -34,7 +34,7 @@ import static tp2.models.utils.Utils.isValidPort;
             "}")
 @Indexes({@Index(fields = @Field("name"), options = @IndexOptions(unique = true)),
           @Index(fields = {@Field("address"), @Field("port")}, options = @IndexOptions(unique = true))})
-public class ClientModel extends BaseDocumentModel implements Serializable {
+public class ClientModel extends BaseDocumentModel<ClientModel> implements Serializable {
 	public static final  String OBJ_NAME         = "client";
 	private static final long   serialVersionUID = -4989469602238675790L;
 	
@@ -59,6 +59,11 @@ public class ClientModel extends BaseDocumentModel implements Serializable {
 	
 	private ClientModel() {
 		super();
+	}
+	
+	@Override
+	public boolean isExactSame(ClientModel doc1) {
+		return equals(doc1);
 	}
 	
 	public String getName() {
@@ -114,4 +119,12 @@ public class ClientModel extends BaseDocumentModel implements Serializable {
 		return attributes.put(key, value);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj)
+		       || (obj instanceof ClientModel
+		           && (((ClientModel) obj).getName().equals(getName())
+		               || (((ClientModel) obj).getAddress().equals(getAddress())
+		                   && ((ClientModel) obj).getPort() == getPort())));
+	}
 }

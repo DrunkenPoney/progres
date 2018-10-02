@@ -12,9 +12,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static tp2.models.utils.Utils.same;
+
 @Entity("groups")
 @SuppressWarnings("unused")
-public class GroupModel extends BaseDocumentModel implements Serializable {
+public class GroupModel extends BaseDocumentModel<GroupModel> implements Serializable {
 	private static final long serialVersionUID = -6960004063225580557L;
 	
 	@Reference
@@ -22,15 +24,24 @@ public class GroupModel extends BaseDocumentModel implements Serializable {
 	
 	private String name;
 	
-	public GroupModel(@NotNull String name) {
+	public GroupModel(@NotNull String name, @NotNull ClientModel first, @NotNull ClientModel... others) {
 		super(ObjectId.get());
 		members = new HashSet<>();
 		this.name = name;
+		addMembers(first);
+		addMembers(others);
 	}
 	
 	private GroupModel() {
 		super();
 		members = new HashSet<>();
+	}
+	
+	@Override
+	public boolean isExactSame(GroupModel doc1) {
+		return equals(doc1) && getName().equals(doc1.getName())
+		       && getMembers().size() == doc1.getMembers().size()
+		       && same(getMembers(), doc1.getMembers());
 	}
 	
 	public Set<ClientModel> getMembers() {
@@ -60,4 +71,5 @@ public class GroupModel extends BaseDocumentModel implements Serializable {
 	public void setName(@NotNull String name) {
 		this.name = name;
 	}
+	
 }

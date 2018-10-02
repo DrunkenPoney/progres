@@ -12,11 +12,12 @@ public final class Constants {
 	public static final String DATABASE          = "tp2";
 	public static final String DOCUMENTS_PACKAGE = "tp2.models.db.documents";
 	
-	public static final int DFLT_EXECUTION_POOL_SIZE = 5;
-	public static final int CONNECTION_TIMEOUT       = 1000;
-	public static final int BUFFER_SIZE              = 1024;
-	public static final int MIN_PORT_NUMBER          = 0;
-	public static final int MAX_PORT_NUMBER          = 65535;
+	public static final int  DFLT_EXECUTION_POOL_SIZE = 5;
+	public static final int  CONNECTION_TIMEOUT       = 1000;
+	public static final int  BUFFER_SIZE              = 1024;
+	public static final int  MIN_PORT_NUMBER          = 0;
+	public static final int  MAX_PORT_NUMBER          = 65535;
+	public static final long COLLECTION_REFRESH_RATE  = 5000; // ms
 	
 	public static final String I18N_MESSAGES_BUNDLE_BASE_NAME = "i18n.messages";
 	

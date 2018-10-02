@@ -29,8 +29,8 @@ import static tp2.models.utils.Utils.describe;
 import static tp2.models.utils.Utils.firstAvailableSocketInRange;
 
 public final class Transmission {
-	private static final ExecutorService SENDER_EXECUTION_QUEUE   = Executors.newSingleThreadExecutor();
-	private static final ExecutorService RECEIVER_EXECUTION_QUEUE = Executors.newFixedThreadPool(Constants.DFLT_EXECUTION_POOL_SIZE);
+	private static final ExecutorService SENDER_EXECUTION_QUEUE   = Executors.newFixedThreadPool(DFLT_EXECUTION_POOL_SIZE);
+	private static final ExecutorService RECEIVER_EXECUTION_QUEUE = Executors.newFixedThreadPool(DFLT_EXECUTION_POOL_SIZE);
 	
 	private static Transmission instance;
 	
@@ -39,7 +39,7 @@ public final class Transmission {
 	
 	private Transmission() {
 		try {
-			handlers = new SynchronousQueue<>();
+			handlers = new ConcurrentLinkedQueue<>();
 			server = AsynchronousServerSocketChannel
 					.open().bind(networkInterfaces()
 							             .filter(ni -> {
@@ -72,13 +72,13 @@ public final class Transmission {
 		final byte[]           bytes   = SerializationUtils.serialize(message);
 		final Set<ClientModel> targets = message.getTarget().getMembers();
 		return SENDER_EXECUTION_QUEUE.submit(() -> {
+			final ByteBuffer buffer = ByteBuffer.wrap(bytes);
 			for (ClientModel target : targets) {
-				ByteBuffer buffer = ByteBuffer.wrap(bytes);
 				try (AsynchronousSocketChannel channel = AsynchronousSocketChannel.open().bind(null)) {
 					channel.connect(target.getSocket()).get(Constants.CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
 					while (buffer.hasRemaining())
 						channel.write(buffer);
-//					buffer.rewind();
+					buffer.rewind();
 				} catch (IOException | InterruptedException | ExecutionException e) {
 					// TODO replace with i18n message
 					System.err.println(FG_MAGENTA.wrap("Error occured while sending message: \n\t" + e.getMessage()));
@@ -114,7 +114,6 @@ public final class Transmission {
 			if (client != null && client.isOpen()) {
 				byte[] bytes = null;
 				int    pos;
-				System.out.println(FG_BRIGHT_BLUE.wrap("Connection established!"));
 				try {
 					do {
 						pos = client.read(buffer).get();
@@ -123,7 +122,6 @@ public final class Transmission {
 							bytes = add(bytes, buffer.get());
 						buffer.clear();
 					} while (pos != -1);
-					
 					if (bytes != null && bytes.length > 0) {
 						final Message receivedMsg = (Message) deserialize(bytes);
 						RECEIVER_EXECUTION_QUEUE.execute(() -> handlers.forEach(handler -> handler.handle(receivedMsg)));

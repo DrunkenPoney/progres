@@ -23,10 +23,10 @@ public class Main {
 		initLocalClient(name, (InetSocketAddress) Transmission.getInstance().getLocalAddress());
 		
 		
-		Transmission.getInstance().addMessageHandler(message -> System.out.println(
+		System.out.println("Handler added? " + Transmission.getInstance().addMessageHandler(message -> System.out.println(
 				format("%s sent: %s",
 				       FG_BRIGHT_YELLOW.wrap(message.getSender().getName()),
-				       FG_BRIGHT_GREEN.wrap(message.getMessage()))));
+				       FG_BRIGHT_GREEN.wrap(message.getMessage())))));
 		
 		List<ClientModel> clients = getClientsCollection().getOnlineClients();
 		
@@ -52,10 +52,9 @@ public class Main {
 		public static void main(String[] args) throws Exception {
 			List<ClientModel> clients     = exec("Charlie");
 			ClientModel       localClient = ((LocalClientCollection) getClientsCollection()).getLocalClient();
+			clients.remove(localClient);
 			
-			GroupModel groupModel = new GroupModel("Bob & Charlie");
-			groupModel.addMembers(localClient);
-			groupModel.addMembers(clients);
+			GroupModel groupModel = new GroupModel("Bob & Charlie", localClient, clients.toArray(new ClientModel[0]));
 			getGroupsCollection().save(groupModel);
 			
 			Transmission.getInstance().send(new Message(localClient, "Hey! Do you copy?", groupModel));
