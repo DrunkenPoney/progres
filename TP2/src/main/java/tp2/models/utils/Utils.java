@@ -39,12 +39,10 @@ public final class Utils {
 		URI uri = Utils.class.getResource("/").toURI();
 		if ("jar".equals(uri.getPath()))
 			return FileSystems.newFileSystem(uri, Collections.emptyMap(), Utils.class.getClassLoader()).getPath(p);
-		System.out.println(uri.getScheme());
 		return new File(uri).toPath();
 	}
 	
 	public static Stream<Path> readdirDeep(Path dir) throws IOException {
-		System.out.println(dir);
 		return Files.walk(dir)
 		            .filter(path -> !path.equals(dir))
 		            .flatMap(path -> {

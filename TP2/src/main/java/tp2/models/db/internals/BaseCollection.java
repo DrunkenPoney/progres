@@ -5,12 +5,14 @@ import com.mongodb.MongoClientURI;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
+import net.sf.cglib.core.ReflectUtils;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
+import sun.reflect.Reflection;
 import tp2.models.utils.Constants;
 
 import java.util.ArrayList;
@@ -18,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-
-import static java.util.List.copyOf;
 
 @SuppressWarnings("unused")
 public abstract class BaseCollection<TDocument extends BaseDocumentModel<TDocument>> {
@@ -54,7 +54,8 @@ public abstract class BaseCollection<TDocument extends BaseDocumentModel<TDocume
 				  .fromIterable(listeners)
 				  .parallel()
 				  .runOn(Schedulers.computation())
-				  .doOnNext(listener -> listener.listen(copyOf(prevDocs), copyOf(docs)))
+				  .doOnNext(listener -> listener.listen(new ArrayList<>(prevDocs), new ArrayList<>(docs)))
+				  .doOnError(throwable -> System.err.println(throwable.getMessage()))
 				  .sequential()
 				  .subscribe())
 		  .doOnNext(docs -> prevDocs.clear())

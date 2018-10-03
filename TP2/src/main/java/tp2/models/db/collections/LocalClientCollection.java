@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
 
+import static tp2.models.db.collections.Accessors.getClientsCollection;
 import static tp2.models.db.collections.Accessors.getGroupsCollection;
 
 public class LocalClientCollection extends ClientsCollection {
@@ -21,20 +22,22 @@ public class LocalClientCollection extends ClientsCollection {
 		super();
 		localClient = model;
 		connect();
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> Flowable
-				.fromIterable(getGroupsCollection().list())
-				.filter(group -> group.getMembers().contains(localClient))
-				.parallel()
-				.runOn(Schedulers.io())
-				.doOnNext(group -> group.removeMembers(localClient))
-				.doOnNext(group -> {
-					if (group.getMembers().size() > 0)
-						getGroupsCollection().save(group);
-					else getGroupsCollection().delete(group);
-				})
-				.sequential()
-				.doOnTerminate(this::disconnect)
-				.subscribe()));
+//		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//			Flowable.fromIterable(getGroupsCollection().list())
+//			        .filter(group -> group.getMembers().contains(getLocalClient()))
+//			        .parallel()
+//			        .runOn(Schedulers.io())
+//			        .doOnNext(group -> group.getMembers().remove(getLocalClient()))
+//			        .doOnNext(group -> group.getMembers().removeIf(member -> get(member) == null))
+//			        .doOnNext(group -> {
+//				        if (group.getMembers().size() > 0)
+//					        getGroupsCollection().save(group);
+//				        else getGroupsCollection().delete(group);
+//			        })
+//			        .sequential()
+//			        .doOnTerminate(this::disconnect)
+//			        .subscribe();
+//		}));
 	}
 	
 	public ClientModel getLocalClient() {

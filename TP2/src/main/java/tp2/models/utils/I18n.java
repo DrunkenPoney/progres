@@ -70,7 +70,6 @@ public class I18n {
 		return get(key, null);
 	}
 	
-	
 	@Contract("null -> null; !null -> _")
 	public <O> O getObject(@Nullable String key) {
 		return get(key, null);

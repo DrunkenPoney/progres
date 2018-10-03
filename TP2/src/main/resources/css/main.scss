@@ -1,3 +1,4 @@
+@import 'remove-default-shit-from-motherfucking-modena.css';
 @import 'fonts';
 
 $main-color: #0C9;
@@ -7,12 +8,11 @@ $background: #222;
     -fx-base: $background;
     -fx-base-fill: darken($main-color, 10%);
     -fx-text-fill: $main-color;
-    -fx-font-family: 'Open Sans';
     -fx-prompt-text-fill: desaturate(darken($main-color, 15%), 5%);
+    -fx-control-inner-background: $background;
 }
 
 .text-field {
-    -fx-font-family: 'Montserrat';
     -fx-padding: 0;
 }
 
@@ -21,14 +21,28 @@ $background: #222;
 }
 
 .title {
-    -fx-font-family: 'Luckiest Guy';
     -fx-font-weight: 900;
     -fx-font-size: 20px;
 }
-
+ 
 .invalid {
-    //-fx-border: 1px;
-    //-fx-border-color: #900;
-    //-fx-border-style: solid;
     -fx-effect: innershadow(one-pass-box, #A00, 1, 25, 0, 0);
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: lighten($background, 15%);
+    -fx-text-fill: lighten($main-color, 10%);
+}
+
+.list-cell:even {
+    -fx-background-color: $background;
+}
+
+.list-cell:odd {
+    -fx-background-color: darken($background, 5%);
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: lighten($background, 5%);
+    -fx-text-fill: $main-color;
 }
