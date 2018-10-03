@@ -1,5 +1,5 @@
 @import 'remove-default-shit-from-motherfucking-modena.css';
-@import 'fonts';
+//@import 'fonts';
 
 $main-color: #0C9;
 $background: #222;
@@ -45,4 +45,8 @@ $background: #222;
 .list-cell:filled:hover {
     -fx-background-color: lighten($background, 5%);
     -fx-text-fill: $main-color;
+}
+
+.font-awesome {
+    -fx-font-family: 'Font Awesome 5 Pro Light';
 }

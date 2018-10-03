@@ -14,11 +14,11 @@ public final class Constants {
 	public static final String DATABASE          = "tp2";
 	public static final String DOCUMENTS_PACKAGE = "tp2.models.db.documents";
 	
-	public static final int CONNECTION_TIMEOUT       = 1000;
-	public static final int BUFFER_SIZE              = 1024;
-	public static final int MIN_PORT_NUMBER          = 0;
-	public static final int MAX_PORT_NUMBER          = 65535;
-	public static final int MAX_PARALLEL_CHANNELS    = 1000;
+	public static final int CONNECTION_TIMEOUT    = 1000;
+	public static final int BUFFER_SIZE           = 1024;
+	public static final int MIN_PORT_NUMBER       = 10;
+	public static final int MAX_PORT_NUMBER       = 65535;
+	public static final long REFRESH_RATE       = 100; // ms
 	
 	public static final String I18N_MESSAGES_BUNDLE_BASE_NAME = "i18n.messages";
 	
@@ -28,10 +28,9 @@ public final class Constants {
 	public static final Duration WIDTH_ANIMATION_DURATION = Duration.millis(350);
 	
 	///////////////////////////////////// RESOURCES /////////////////////////////////////
-	
-	public static final Resource RSS_FXML_MAIN              = new Resource("/main.fxml");
-	public static final Resource RSS_FXML_LEFT_PANEL        = new Resource("/left-panel.fxml");
-	public static final Resource RSS_CSS_MAIN               = new Resource("/css/main.css");
+	public static final Resource RSS_FXML_MAIN       = new Resource("/main.fxml");
+	public static final Resource RSS_FXML_LEFT_PANEL = new Resource("/left-panel.fxml");
+	public static final Resource RSS_CSS_MAIN        = new Resource("/css/main.css");
 	
 	public static class Resource {
 		private final String path;

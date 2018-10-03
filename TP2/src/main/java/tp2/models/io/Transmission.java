@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import static java.lang.Math.min;
 import static java.lang.String.format;
@@ -37,6 +35,8 @@ import static tp2.models.utils.Utils.firstAvailableSocketInRange;
 
 public final class Transmission {
 	private static Transmission instance;
+	
+	private static final ExecutorService SENDER_EXECUTION_QUEUE   = Executors.newSingleThreadExecutor();
 	
 	private final List<TransmissionDataHandler>   handlers;
 	private final AsynchronousServerSocketChannel server;
@@ -72,33 +72,28 @@ public final class Transmission {
 		return instance;
 	}
 	
-	public Disposable send(@NotNull TransmissionData message) {
-		final byte[]           bytes   = SerializationUtils.serialize(message);
-		final Set<ClientModel> targets = message.getTarget().getMembers();
-		return Flowable.fromIterable(targets)
-		               .parallel(min(targets.size(), MAX_PARALLEL_CHANNELS))
-		               .runOn(Schedulers.io())
-		               .map(ClientModel::getSocket)
-		               .doOnNext(socket -> {
-			               ByteBuffer buffer = ByteBuffer.wrap(bytes);
-			               try (AsynchronousSocketChannel channel = AsynchronousSocketChannel.open()) {
-				               channel.connect(socket).get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-				               while (buffer.hasRemaining())
-					               channel.write(buffer);
-				               buffer.clear();
-			               }
-		               })
-		               .doOnError(throwable -> {
-			               if (throwable instanceof TimeoutException) { // TODO replace by i18n messages
-				               System.err.println(FG_MAGENTA.wrap("Connection timed out! \n\t" + throwable.getMessage()));
-				               throwable.printStackTrace();
-			               } else {
-				               System.err.println(FG_MAGENTA.wrap("Error occured while sending message: \n\t" + throwable.getMessage()));
-				               throwable.printStackTrace();
-			               }
-		               })
-		               .sequential()
-		               .subscribe();
+	public Future<?> send(@NotNull TransmissionData data) {
+		final byte[]           bytes   = SerializationUtils.serialize(data);
+		final Set<ClientModel> targets = data.getTarget().getMembers();
+		return SENDER_EXECUTION_QUEUE.submit(() -> {
+			ByteBuffer buffer = ByteBuffer.wrap(bytes);
+			for (ClientModel target : targets) {
+				try (AsynchronousSocketChannel channel = AsynchronousSocketChannel.open().bind(null)) {
+					channel.connect(target.getSocket()).get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+					while (buffer.hasRemaining())
+						channel.write(buffer);
+					buffer.rewind();
+				} catch (IOException | InterruptedException | ExecutionException e) {
+					// TODO replace with i18n message
+					System.err.println(FG_MAGENTA.wrap("Error occured while sending message: \n\t" + e.getMessage()));
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					// TODO replace with i18n message
+					System.err.println(FG_MAGENTA.wrap("Connection timed out! \n\t" + e.getMessage()));
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	public boolean addDataHandler(final @NotNull TransmissionDataHandler handler) {

@@ -9,14 +9,16 @@ import java.util.stream.Collectors;
 
 import static java.util.HashMap.Entry;
 import static org.apache.commons.lang3.StringUtils.*;
+import static tp2.models.utils.Utils.isAny;
 
 public class I18n {
 	private static final Map<String, I18n> defaults = new HashMap<>();
 	
+	private static final String[] SUPPORTED_LOCALES = {"en"};
+	
 	static {
-		if (System.getProperty("user.language").equalsIgnoreCase("fr"))
-			Locale.setDefault(Locale.CANADA_FRENCH);
-		else Locale.setDefault(Locale.CANADA);
+		if (System.getProperty("user.language").equalsIgnoreCase("en"))
+			Locale.setDefault(Locale.CANADA);
 	}
 	
 	private final ResourceBundle      bundle;
@@ -51,7 +53,7 @@ public class I18n {
 	}
 	
 	private I18n updated() {
-		return bundle.getLocale() == Locale.getDefault()
+		return (!isAny(Locale.getDefault().getLanguage(), SUPPORTED_LOCALES) || bundle.getLocale().equals(Locale.getDefault()))
 		       ? this : bundle(bundle.getBaseBundleName()).withPrefix(prefix);
 	}
 	

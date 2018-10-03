@@ -101,9 +101,14 @@
                         <goals>
                             <goal>update-stylesheets</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>process-resources</phase>
                         <configuration>
-                            <sassSourceDirectory>${project.basedir}/src</sassSourceDirectory>
+                            <sassSourceDirectory>${basedir}/src/main/resources/css</sassSourceDirectory>
+                            <destination>${build.outputDirectory}/css</destination>
+                            <includes>**/*.scss</includes>
+                            <sassOptions>
+                                <always_update>true</always_update>
+                            </sassOptions>
                         </configuration>
                     </execution>
                 </executions>

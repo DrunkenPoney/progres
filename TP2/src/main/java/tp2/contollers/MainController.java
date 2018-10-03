@@ -13,18 +13,19 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tp2.models.db.collections.Accessors;
 import tp2.models.db.collections.LocalClientCollection;
+import tp2.models.db.documents.GroupModel;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
 import tp2.models.io.FileData;
 import tp2.models.io.Message;
 import tp2.models.io.Transmission;
 import tp2.models.utils.Constants;
 import tp2.models.utils.SGR;
-import tp2.models.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 import static tp2.models.db.collections.Accessors.getClientsCollection;
 import static tp2.models.utils.I18n.messages;
 
+@SuppressWarnings("WeakerAccess")
 public class MainController extends Application {
 	@FXML
 	private ListView<HBox>      chatBox;
@@ -49,6 +51,8 @@ public class MainController extends Application {
 	private AnchorPane          contentPane;
 	@FXML
 	private ListView<FileData>  files;
+	@FXML
+	private Button              btnSend;
 	
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void main(String[] args) {
@@ -67,7 +71,6 @@ public class MainController extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Parent root = FXMLLoader.load(Constants.RSS_FXML_MAIN.get());
-		Utils.loadFonts();
 		root.getStylesheets().add(Constants.RSS_CSS_MAIN.getPath());
 		primaryStage.setScene(new Scene(root));
 		primaryStage.setTitle(messages().get("window.title"));
@@ -87,6 +90,7 @@ public class MainController extends Application {
 	
 	@FXML
 	private void initialize() {
+		btnSend.disableProperty().bind(leftPanel.selectedGroupProperty().isNull());
 		Transmission.getInstance().addDataHandler(data -> {
 			if (data instanceof Message)
 				chatMsg((Message) data);
@@ -103,23 +107,30 @@ public class MainController extends Application {
 		         .addListener((observable, oldValue, newValue) ->
 				                      AnchorPane.setLeftAnchor(contentPane, newValue.doubleValue()));
 		AnchorPane.setLeftAnchor(contentPane, leftPanel.getPrefWidth());
-//		chatBox
 		
 		MenuItem sendFile = new MenuItem(messages().get("chat.context.menu.send.file"));
 		sendFile.setOnAction(event -> {
-			FileChooser chooser = new FileChooser();
-			List<File>  files   = chooser.showOpenMultipleDialog(chatBox.getScene().getWindow());
-			if (files != null && files.size() > 0) {
-				Flowable.fromIterable(files)
-				        .parallel()
-				        .runOn(Schedulers.io())
-				        .map(file -> new FileData(
-						        ((LocalClientCollection) getClientsCollection()).getLocalClient(),
-						        file.getName(), Files.readAllBytes(file.toPath()),
-						        leftPanel.selectedGroupProperty().get()))
-				        .doOnNext(file -> Transmission.getInstance().send(file))
-				        .sequential()
-				        .subscribe();
+			final GroupModel group = leftPanel.selectedGroupProperty().get();  
+			if (group != null) {
+				FileChooser chooser = new FileChooser();
+				List<File>  files   = chooser.showOpenMultipleDialog(chatBox.getScene().getWindow());
+				if (files != null && files.size() > 0) {
+					Flowable.fromIterable(files)
+					        .parallel()
+					        .runOn(Schedulers.io())
+					        .map(file -> new FileData(
+							        ((LocalClientCollection) getClientsCollection()).getLocalClient(),
+							        file.getName(), Files.readAllBytes(file.toPath()),
+							        group))
+					        .doOnNext(file -> Transmission.getInstance().send(file))
+					        .sequential()
+					        .subscribe();
+				}
+			} else {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setHeaderText(messages().get("error.send.no.group.header"));
+				alert.setHeaderText(messages().get("error.send.no.group.content"));
+				alert.showAndWait();
 			}
 		});
 		chatBox.setContextMenu(new ContextMenu(sendFile));
@@ -155,9 +166,12 @@ public class MainController extends Application {
 				}
 			}
 		});
+		
+		
 	}
 	
 	@FXML
+	@SuppressWarnings("unused")
 	private void send(ActionEvent event) {
 		Transmission.getInstance().send(new Message(((LocalClientCollection) getClientsCollection()).getLocalClient(),
 		                                            textField.getText(),

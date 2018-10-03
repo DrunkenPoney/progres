@@ -1,6 +1,5 @@
 package tp2.models.utils;
 
-import javafx.scene.text.Font;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.validator.routines.IntegerValidator;
@@ -27,14 +26,6 @@ import static tp2.models.utils.SGR.*;
 
 @SuppressWarnings("unused")
 public final class Utils {
-	
-	public static void loadFonts() throws IOException, URISyntaxException {
-		Utils.readdirDeep(toResourcePath("/"))
-		     .filter(path -> path.toString().matches(".*\\.([to]tf|woff2?)"))
-		     .map(path -> Utils.class.getResourceAsStream(path.toString()))
-		     .forEach(rss -> Font.loadFont(rss, 12));
-	}
-	
 	public static Path toResourcePath(String p) throws URISyntaxException, IOException {
 		URI uri = Utils.class.getResource("/").toURI();
 		if ("jar".equals(uri.getPath()))

@@ -27,15 +27,21 @@ import static tp2.models.utils.I18n.messages;
 
 @SuppressWarnings("unused")
 public class LeftPanelController extends AnchorPane {
-	public static final String PANEL_TOGGLE_BTN_TEXT_OPENED = "\uf34a";
-	public static final String PANEL_TOGGLE_BTN_TEXT_CLOSED = "\uf346";
-	public static final String ADD_GROUP_BTN_TEXT           = "\uf067";
+	public static final String PANEL_TOGGLE_BTN_TEXT_OPENED = "\uD83E\uDC47";
+	public static final String PANEL_TOGGLE_BTN_TEXT_CLOSED = "\uD83E\uDC45";
+	public static final String ADD_GROUP_BTN_TEXT           = "\uD83D\uDFA4";
 	
 	@FXML
 	private ListView<GroupModel> groupList;
 	
 	@FXML
 	private ListView<ClientModel> clientList;
+	
+	@FXML
+	private Button btnAddGroup;
+	
+	@FXML
+	private Button btnTogglePanel;
 	
 	
 	public LeftPanelController() throws IOException {
@@ -47,7 +53,6 @@ public class LeftPanelController extends AnchorPane {
 	
 	@FXML
 	private void initialize() {
-		
 		groupList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		clientList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		
@@ -95,7 +100,7 @@ public class LeftPanelController extends AnchorPane {
 		
 		selectedGroupProperty().addListener((observable, oldValue, newValue) -> {
 			ClientModel local = ((LocalClientCollection) getClientsCollection()).getLocalClient();
-			if ( oldValue != null) {
+			if (oldValue != null) {
 				oldValue.getMembers().remove(local);
 				getGroupsCollection().save(oldValue);
 			}
@@ -165,7 +170,8 @@ public class LeftPanelController extends AnchorPane {
 		dialog.setHeaderText(messages().get("dialog.group.creation.header"));
 		String groupName = dialog.showAndWait().orElse(null);
 		if (isNotBlank(groupName)) {
-			GroupModel group = new GroupModel(groupName, ((LocalClientCollection) getClientsCollection()).getLocalClient());
+			GroupModel group = new GroupModel(groupName,
+			                                  ((LocalClientCollection) getClientsCollection()).getLocalClient());
 			getGroupsCollection().save(group);
 			groupList.getItems().add(group);
 			groupList.getSelectionModel().select(group);

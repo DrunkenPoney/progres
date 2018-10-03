@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import static tp2.models.utils.Constants.REFRESH_RATE;
 
 @SuppressWarnings("unused")
 public abstract class BaseCollection<TDocument extends BaseDocumentModel<TDocument>> {
@@ -74,7 +77,7 @@ public abstract class BaseCollection<TDocument extends BaseDocumentModel<TDocume
 				        modelListeners.remove(entry.getKey());
 		        })
 		        .sequential()
-		        .repeat()
+		        .repeatWhen(complete -> complete.delay(REFRESH_RATE, TimeUnit.MILLISECONDS))
 		        .subscribe();
 	}
 	

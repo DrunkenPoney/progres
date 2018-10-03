@@ -11,9 +11,9 @@
 <?import javafx.scene.text.Font?>
 
 <fx:root maxWidth="250.0" minWidth="0.0" prefWidth="0.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
-   <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#togglePanel" prefWidth="80.0" rotate="90.0" text="" AnchorPane.rightAnchor="-49.0" AnchorPane.topAnchor="25.0">
+   <Button fx:id="btnTogglePanel" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#togglePanel" prefWidth="80.0" rotate="90.0" text="🡅" AnchorPane.rightAnchor="-49.0" AnchorPane.topAnchor="25.0">
       <font>
-         <Font name="Font Awesome 5 Pro Regular" size="16.0" />
+         <Font name="Font Awesome 5 Pro Light" size="16.0" />
       </font>
       <padding>
          <Insets bottom="5.0" left="5.0" right="5.0" top="3.0" />
@@ -28,7 +28,7 @@
                </font>
             </Label>
          </HBox>
-         <ListView fx:id="clientList" />
+         <ListView VBox.vgrow="ALWAYS" fx:id="clientList" />
       </VBox>
       <VBox layoutX="10.0" layoutY="10.0">
          <HBox>
@@ -42,13 +42,13 @@
                   </font>
                </Label>
             </HBox>
-            <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#createGroup" text="" textAlignment="CENTER" HBox.hgrow="NEVER">
+            <Button fx:id="btnAddGroup" contentDisplay="CENTER" mnemonicParsing="false" onAction="#createGroup" text="🞤" textAlignment="CENTER" HBox.hgrow="NEVER">
                <font>
                   <Font name="Font Awesome 5 Pro Regular" size="13.0" />
                </font>
             </Button>
          </HBox>
-         <ListView fx:id="groupList" />
+         <ListView VBox.vgrow="ALWAYS" fx:id="groupList" />
       </VBox>
    </SplitPane>
 </fx:root>
