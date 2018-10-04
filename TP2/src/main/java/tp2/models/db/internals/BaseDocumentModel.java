@@ -28,6 +28,7 @@ public abstract class BaseDocumentModel<DOC extends BaseDocumentModel<DOC>> impl
 		this.id = id;
 	}
 	
+	@SuppressWarnings("unused")
 	public abstract boolean isExactSame(DOC doc1);
 	
 	@Override

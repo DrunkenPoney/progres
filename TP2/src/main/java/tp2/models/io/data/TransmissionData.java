@@ -1,4 +1,4 @@
-package tp2.models.io;
+package tp2.models.io.data;
 
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.documents.GroupModel;
@@ -11,7 +11,7 @@ public abstract class TransmissionData implements Serializable {
 	private final ClientModel sender;
 	private final GroupModel  target;
 	
-	protected TransmissionData(ClientModel sender, GroupModel target) {
+	public TransmissionData(ClientModel sender, GroupModel target) {
 		this.sender = sender;
 		this.target = target;
 	}

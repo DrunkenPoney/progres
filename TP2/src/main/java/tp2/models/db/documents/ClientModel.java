@@ -42,6 +42,9 @@ public class ClientModel extends BaseDocumentModel<ClientModel> implements Seria
 	private String address;
 	private int    port;
 	
+	@Reference
+	private GroupModel group;
+	
 	@Embedded
 	private Map<String, Object> attributes;
 	
@@ -59,6 +62,14 @@ public class ClientModel extends BaseDocumentModel<ClientModel> implements Seria
 	
 	private ClientModel() {
 		super();
+	}
+	
+	public GroupModel getGroup() {
+		return group;
+	}
+	
+	public void setGroup(GroupModel group) {
+		this.group = group;
 	}
 	
 	@Override

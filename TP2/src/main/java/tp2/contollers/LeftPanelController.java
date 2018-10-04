@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import tp2.models.db.collections.LocalClientCollection;
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.documents.GroupModel;
 import tp2.models.utils.Constants;
@@ -97,35 +96,6 @@ public class LeftPanelController extends AnchorPane {
 			newList.removeAll(clientList.getItems());
 			clientList.getItems().addAll(newList);
 		}));
-		
-		selectedGroupProperty().addListener((observable, oldValue, newValue) -> {
-			ClientModel local = ((LocalClientCollection) getClientsCollection()).getLocalClient();
-			if (oldValue != null) {
-				oldValue.getMembers().remove(local);
-				getGroupsCollection().save(oldValue);
-			}
-			if (newValue != null) {
-				newValue.getMembers().add(local);
-				getGroupsCollection().save(newValue);
-			}
-		});
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			GroupModel group = groupList.getSelectionModel().getSelectedItem();
-			if (isLocalClientInitialized()) {
-				LocalClientCollection collection = (LocalClientCollection) getClientsCollection();
-				System.out.println(group);
-				if (group != null) {
-					if (group.getMembers().size() <= 1)
-						getGroupsCollection().delete(group);
-					else {
-						group.removeMembers(collection.getLocalClient());
-						getGroupsCollection().save(group);
-					}
-				}
-				collection.disconnect();
-			}
-		}));
 	}
 	
 	@FXML
@@ -147,14 +117,6 @@ public class LeftPanelController extends AnchorPane {
 		                          new KeyValue(prefWidthProperty(), width))).play();
 	}
 	
-	public ListView<GroupModel> getGroups() {
-		return groupList;
-	}
-	
-	public ListView<ClientModel> getClients() {
-		return clientList;
-	}
-	
 	public ReadOnlyObjectProperty<GroupModel> selectedGroupProperty() {
 		return groupList.getSelectionModel().selectedItemProperty();
 	}
@@ -165,14 +127,16 @@ public class LeftPanelController extends AnchorPane {
 	
 	@FXML
 	private void createGroup(ActionEvent event) {
+		assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle(messages().get("dialog.group.creation.title"));
 		dialog.setHeaderText(messages().get("dialog.group.creation.header"));
 		String groupName = dialog.showAndWait().orElse(null);
 		if (isNotBlank(groupName)) {
-			GroupModel group = new GroupModel(groupName,
-			                                  ((LocalClientCollection) getClientsCollection()).getLocalClient());
+			GroupModel group = new GroupModel(groupName);
 			getGroupsCollection().save(group);
+			getLocalClientCollection().getLocalClient().setGroup(group);
+			getLocalClientCollection().saveLocalClient();
 			groupList.getItems().add(group);
 			groupList.getSelectionModel().select(group);
 			groupList.refresh();

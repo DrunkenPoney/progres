@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,9 +23,11 @@ import tp2.models.db.collections.Accessors;
 import tp2.models.db.collections.LocalClientCollection;
 import tp2.models.db.documents.GroupModel;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
-import tp2.models.io.FileData;
-import tp2.models.io.Message;
 import tp2.models.io.Transmission;
+import tp2.models.io.data.EventData;
+import tp2.models.io.data.EventData.EventType;
+import tp2.models.io.data.FileData;
+import tp2.models.io.data.MessageData;
 import tp2.models.utils.Constants;
 import tp2.models.utils.SGR;
 
@@ -37,6 +41,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.*;
 import static tp2.models.db.collections.Accessors.getClientsCollection;
+import static tp2.models.db.collections.Accessors.getLocalClientCollection;
 import static tp2.models.utils.I18n.messages;
 
 @SuppressWarnings("WeakerAccess")
@@ -91,16 +96,31 @@ public class MainController extends Application {
 	@FXML
 	private void initialize() {
 		btnSend.disableProperty().bind(leftPanel.selectedGroupProperty().isNull());
-		Transmission.getInstance().addDataHandler(data -> {
-			if (data instanceof Message)
-				chatMsg((Message) data);
-			else if (data instanceof FileData)
+		Transmission.getInstance().addDataHandler(data -> Platform.runLater(() -> {
+			if (data instanceof MessageData)
+				chatMsg((MessageData) data);
+			else if (data instanceof FileData) {
 				files.getItems().add((FileData) data);
-		});
+				chatLog(data.getSender().getName(), " a envoyé ", ((FileData) data).getFileName(), ".");
+			} else if (data instanceof EventData)
+				chatLog(data.getSender().getName(), ((EventData) data).getEvent() == EventType.GROUP_JOIN
+				                                    ? " a rejoind le groupe."
+				                                    : " a quitté le groupe.");
+		}));
 		leftPanel.selectedGroupProperty().addListener((o, oldValue, newValue) -> {
-			if (newValue == null)
+			assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
+			if (oldValue != null)
+				Transmission.getInstance().send(new EventData(getLocalClientCollection().getLocalClient(),
+				                                              EventType.GROUP_LEFT, oldValue));
+			if (newValue == null) {
 				chatLog(messages().get("chat.log.group.joined.null"));
-			else chatLog(format(messages().get("chat.log.group.joined"), newValue.getName()));
+			} else {
+				Transmission.getInstance().send(new EventData(getLocalClientCollection().getLocalClient(),
+				                                              EventType.GROUP_JOIN, newValue));
+				chatLog(format(messages().get("chat.log.group.joined"), newValue.getName()));
+			}
+			getLocalClientCollection().getLocalClient().setGroup(newValue);
+			getLocalClientCollection().saveLocalClient();
 		});
 		
 		leftPanel.prefWidthProperty()
@@ -110,7 +130,7 @@ public class MainController extends Application {
 		
 		MenuItem sendFile = new MenuItem(messages().get("chat.context.menu.send.file"));
 		sendFile.setOnAction(event -> {
-			final GroupModel group = leftPanel.selectedGroupProperty().get();  
+			final GroupModel group = leftPanel.selectedGroupProperty().get();
 			if (group != null) {
 				FileChooser chooser = new FileChooser();
 				List<File>  files   = chooser.showOpenMultipleDialog(chatBox.getScene().getWindow());
@@ -166,38 +186,59 @@ public class MainController extends Application {
 				}
 			}
 		});
-		
-		
 	}
 	
 	@FXML
 	@SuppressWarnings("unused")
 	private void send(ActionEvent event) {
-		Transmission.getInstance().send(new Message(((LocalClientCollection) getClientsCollection()).getLocalClient(),
-		                                            textField.getText(),
-		                                            leftPanel.selectedGroupProperty().get()));
-		textField.setText("");
+		assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
+		if (isNotBlank(textField.getCharacters())) {
+			Transmission.getInstance()
+			            .send(new MessageData(getLocalClientCollection().getLocalClient(),
+			                                  textField.getText(),
+			                                  leftPanel.selectedGroupProperty().get()));
+			textField.setText("");
+		}
+	}
+	
+	private void chatLog(String name, String action, String... more) {
+		Platform.runLater(() -> {
+			Text n = new Text(name);
+			n.setFill(Color.AQUAMARINE);
+			n.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
+			Text act = new Text(action + String.join("", more));
+			act.setFill(Color.LIGHTGRAY);
+			act.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
+			VBox box = new VBox(n, act);
+			HBox.setHgrow(box, Priority.SOMETIMES);
+			chatBox.getItems().add(new HBox(box));
+		});
 	}
 	
 	private void chatLog(String log) {
 		Platform.runLater(() -> {
 			Text entry = new Text(log);
 			entry.setFill(Color.LIGHTGRAY);
-			chatBox.getItems().add(new HBox(entry));
+			entry.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
+			VBox box = new VBox(entry);
+			HBox.setHgrow(box, Priority.SOMETIMES);
+			chatBox.getItems().add(new HBox(box));
 		});
 	}
 	
-	private void chatMsg(Message msg) {
+	private void chatMsg(MessageData msg) {
 		Platform.runLater(() -> {
-			Text sender = new Text(msg.getSender().getName());
+			Text sender = new Text(msg.getSender().getName() + " :");
 			sender.setFill(Color.GREENYELLOW);
-			Text info = new Text(messages().get("chat.msg.sent"));
-			info.setFill(Color.LIGHTGRAY);
+			sender.setStyle("-fx-font-weight: bold");
+			sender.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
 			Text message = new Text(msg.getMessage());
-			message.setFill(Color.AQUA);
-			HBox box = new HBox(sender, info, message);
-			box.setSpacing(3);
-			chatBox.getItems().add(box);
+			message.setFill(Color.CADETBLUE);
+			message.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
+			message.setStyle("-fx-border: 1px solid red");
+			VBox box = new VBox(sender, message);
+			HBox.setHgrow(box, Priority.SOMETIMES);
+			chatBox.getItems().add(new HBox(box));
 		});
 	}
 	

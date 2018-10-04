@@ -1,4 +1,4 @@
-package tp2.models.io;
+package tp2.models.io.data;
 
 import org.jetbrains.annotations.NotNull;
 import tp2.models.db.documents.ClientModel;
@@ -7,12 +7,12 @@ import tp2.models.db.documents.GroupModel;
 import java.io.Serializable;
 
 @SuppressWarnings("unused")
-public class Message extends TransmissionData implements Serializable {
+public class MessageData extends TransmissionData implements Serializable {
 	private static final long serialVersionUID = -6416529426873270241L;
 	
-	private final String      message;
+	private final String message;
 	
-	public Message(@NotNull ClientModel sender, @NotNull String message, @NotNull GroupModel target) {
+	public MessageData(@NotNull ClientModel sender, @NotNull String message, @NotNull GroupModel target) {
 		super(sender, target);
 		this.message = message;
 	}

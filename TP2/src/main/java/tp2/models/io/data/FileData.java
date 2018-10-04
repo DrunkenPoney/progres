@@ -1,4 +1,4 @@
-package tp2.models.io;
+package tp2.models.io.data;
 
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.documents.GroupModel;

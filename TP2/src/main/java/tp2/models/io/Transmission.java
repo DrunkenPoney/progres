@@ -1,12 +1,13 @@
 package tp2.models.io;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.jetbrains.annotations.NotNull;
-import tp2.models.db.documents.ClientModel;
+import tp2.models.io.data.TransmissionData;
 
 import java.io.IOException;
 import java.net.NetworkInterface;
@@ -16,17 +17,19 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
 
-import static java.lang.Math.min;
 import static java.lang.String.format;
 import static java.net.NetworkInterface.networkInterfaces;
+import static java.nio.ByteBuffer.allocateDirect;
 import static org.apache.commons.lang3.ArrayUtils.add;
+import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.apache.commons.lang3.SerializationUtils.deserialize;
+import static tp2.models.db.collections.Accessors.getGroupsCollection;
 import static tp2.models.utils.Constants.*;
 import static tp2.models.utils.I18n.messages;
 import static tp2.models.utils.SGR.FG_MAGENTA;
@@ -35,8 +38,6 @@ import static tp2.models.utils.Utils.firstAvailableSocketInRange;
 
 public final class Transmission {
 	private static Transmission instance;
-	
-	private static final ExecutorService SENDER_EXECUTION_QUEUE   = Executors.newSingleThreadExecutor();
 	
 	private final List<TransmissionDataHandler>   handlers;
 	private final AsynchronousServerSocketChannel server;
@@ -72,28 +73,18 @@ public final class Transmission {
 		return instance;
 	}
 	
-	public Future<?> send(@NotNull TransmissionData data) {
-		final byte[]           bytes   = SerializationUtils.serialize(data);
-		final Set<ClientModel> targets = data.getTarget().getMembers();
-		return SENDER_EXECUTION_QUEUE.submit(() -> {
-			ByteBuffer buffer = ByteBuffer.wrap(bytes);
-			for (ClientModel target : targets) {
-				try (AsynchronousSocketChannel channel = AsynchronousSocketChannel.open().bind(null)) {
-					channel.connect(target.getSocket()).get(CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-					while (buffer.hasRemaining())
-						channel.write(buffer);
-					buffer.rewind();
-				} catch (IOException | InterruptedException | ExecutionException e) {
-					// TODO replace with i18n message
-					System.err.println(FG_MAGENTA.wrap("Error occured while sending message: \n\t" + e.getMessage()));
-					e.printStackTrace();
-				} catch (TimeoutException e) {
-					// TODO replace with i18n message
-					System.err.println(FG_MAGENTA.wrap("Connection timed out! \n\t" + e.getMessage()));
-					e.printStackTrace();
-				}
-			}
-		});
+	public Disposable send(final @NotNull TransmissionData data) {
+		final byte[] bytes = SerializationUtils.serialize(data);
+		return Observable.fromIterable(getGroupsCollection().membersOf(data.getTarget()))
+		                 .doOnNext(client -> {
+			                 ByteBuffer buffer = allocateDirect(bytes.length).put(bytes).flip();
+			                 try (SocketChannel channel = SocketChannel.open().bind(null)) {
+				                 channel.connect(client.getSocket());
+				                 while (buffer.hasRemaining())
+					                 channel.write(buffer);
+			                 }
+		                 })
+		                 .subscribe();
 	}
 	
 	public boolean addDataHandler(final @NotNull TransmissionDataHandler handler) {
@@ -114,21 +105,25 @@ public final class Transmission {
 		public void completed(AsynchronousSocketChannel client, Void attachment) {
 			server.accept(null, this);
 			final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+			byte[]           bytes  = null;
+			int              pos;
+			
 			if (client != null && client.isOpen()) {
-				byte[] bytes = null;
-				int    pos;
 				try {
 					do {
 						pos = client.read(buffer).get();
 						buffer.flip();
-						while (buffer.hasRemaining())
+						if (buffer.hasArray())
+							bytes = addAll(bytes, buffer.array());
+						else while (buffer.hasRemaining())
 							bytes = add(bytes, buffer.get());
 						buffer.clear();
 					} while (pos != -1);
+					
 					if (bytes != null && bytes.length > 0) {
 						final TransmissionData data = (TransmissionData) deserialize(bytes);
 						Flowable.fromIterable(handlers)
-						        .subscribeOn(Schedulers.computation())
+						        .subscribeOn(Schedulers.single())
 						        .parallel()
 						        .runOn(Schedulers.computation())
 						        .doOnNext(handler -> handler.handle(data))

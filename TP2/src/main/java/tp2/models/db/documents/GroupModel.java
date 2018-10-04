@@ -19,49 +19,20 @@ import static tp2.models.utils.Utils.same;
 public class GroupModel extends BaseDocumentModel<GroupModel> implements Serializable {
 	private static final long serialVersionUID = -6960004063225580557L;
 	
-	@Reference
-	private final Set<ClientModel> members;
-	
 	private String name;
 	
-	public GroupModel(@NotNull String name, @NotNull ClientModel first, @NotNull ClientModel... others) {
+	public GroupModel(@NotNull String name) {
 		super(ObjectId.get());
-		members = new HashSet<>();
 		this.name = name;
-		addMembers(first);
-		addMembers(others);
 	}
 	
 	private GroupModel() {
 		super();
-		members = new HashSet<>();
 	}
 	
 	@Override
 	public boolean isExactSame(GroupModel doc1) {
-		return equals(doc1) && getName().equals(doc1.getName())
-		       && getMembers().size() == doc1.getMembers().size()
-		       && same(getMembers(), doc1.getMembers());
-	}
-	
-	public Set<ClientModel> getMembers() {
-		return members;
-	}
-	
-	public boolean addMembers(@NotNull ClientModel... members) {
-		return addMembers(Arrays.asList(members));
-	}
-	
-	public boolean addMembers(@NotNull Collection<ClientModel> members) {
-		return getMembers().addAll(members);
-	}
-	
-	public boolean removeMembers(@NotNull ClientModel... members) {
-		return removeMembers(Arrays.asList(members));
-	}
-	
-	public boolean removeMembers(@NotNull Collection<ClientModel> members) {
-		return getMembers().removeAll(members);
+		return equals(doc1) && getName().equals(doc1.getName());
 	}
 	
 	public String getName() {

@@ -16,7 +16,7 @@ public final class Constants {
 	
 	public static final int CONNECTION_TIMEOUT    = 1000;
 	public static final int BUFFER_SIZE           = 1024;
-	public static final int MIN_PORT_NUMBER       = 10;
+	public static final int MIN_PORT_NUMBER       = 0;
 	public static final int MAX_PORT_NUMBER       = 65535;
 	public static final long REFRESH_RATE       = 100; // ms
 	

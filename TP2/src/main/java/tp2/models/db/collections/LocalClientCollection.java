@@ -1,12 +1,10 @@
 package tp2.models.db.collections;
 
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import tp2.models.db.documents.ClientModel;
+import tp2.models.db.documents.GroupModel;
 import tp2.models.db.internals.exceptions.InvalidAttributeException;
 
-import static tp2.models.db.collections.Accessors.getClientsCollection;
 import static tp2.models.db.collections.Accessors.getGroupsCollection;
 
 public class LocalClientCollection extends ClientsCollection {
@@ -22,22 +20,18 @@ public class LocalClientCollection extends ClientsCollection {
 		super();
 		localClient = model;
 		connect();
-//		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//			Flowable.fromIterable(getGroupsCollection().list())
-//			        .filter(group -> group.getMembers().contains(getLocalClient()))
-//			        .parallel()
-//			        .runOn(Schedulers.io())
-//			        .doOnNext(group -> group.getMembers().remove(getLocalClient()))
-//			        .doOnNext(group -> group.getMembers().removeIf(member -> get(member) == null))
-//			        .doOnNext(group -> {
-//				        if (group.getMembers().size() > 0)
-//					        getGroupsCollection().save(group);
-//				        else getGroupsCollection().delete(group);
-//			        })
-//			        .sequential()
-//			        .doOnTerminate(this::disconnect)
-//			        .subscribe();
-//		}));
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			final GroupModel grToDel = localClient.getGroup() != null
+			                           && query().asList()
+			                                     .stream()
+			                                     .filter(client -> !client.equals(localClient))
+			                                     .map(ClientModel::getGroup)
+			                                     .noneMatch(group -> group.equals(localClient.getGroup()))
+			                           ? localClient.getGroup() : null;
+			disconnect();
+			if (grToDel != null)
+				getGroupsCollection().delete(grToDel);
+		}));
 	}
 	
 	public ClientModel getLocalClient() {
