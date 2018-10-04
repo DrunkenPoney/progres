@@ -209,9 +209,7 @@ public class MainController extends Application {
 			Text act = new Text(action + String.join("", more));
 			act.setFill(Color.LIGHTGRAY);
 			act.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
-			VBox box = new VBox(n, act);
-			HBox.setHgrow(box, Priority.SOMETIMES);
-			chatBox.getItems().add(new HBox(box));
+			chatBox.getItems().add(new HBox(n, act));
 		});
 	}
 	
