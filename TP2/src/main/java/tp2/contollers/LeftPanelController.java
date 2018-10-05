@@ -10,9 +10,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import tp2.models.db.documents.ClientModel;
 import tp2.models.db.documents.GroupModel;
 import tp2.models.utils.Constants;
+import tp2.models.utils.I18n;
+import tp2.models.utils.I18n.Language;
 
 import java.io.IOException;
 
@@ -42,6 +46,11 @@ public class LeftPanelController extends AnchorPane {
 	@FXML
 	private Button btnTogglePanel;
 	
+	@FXML
+	private Label groupsLabel;
+	
+	@FXML
+	private Label onlineClientsLabel;
 	
 	public LeftPanelController() throws IOException {
 		FXMLLoader loader = new FXMLLoader();
@@ -76,7 +85,15 @@ public class LeftPanelController extends AnchorPane {
 					setText(null);
 					setGraphic(null);
 				} else {
-					setText(format("%s (%s:%s)", item.getName(), item.getAddress(), item.getPort()));
+					assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
+					String val = format("%s (%s:%s)", item.getName(), item.getAddress(), item.getPort());
+					if (item.equals(getLocalClientCollection().getLocalClient())) {
+						Text txt = new Text(val);
+						txt.setFill(Color.AQUA);
+						setGraphic(txt);
+					} else {
+						setText(val);
+					}
 				}
 			}
 		});
@@ -123,6 +140,11 @@ public class LeftPanelController extends AnchorPane {
 	
 	public ReadOnlyObjectProperty<ClientModel> selectedClientProperty() {
 		return clientList.getSelectionModel().selectedItemProperty();
+	}
+	
+	public void applyLanguage(Language lang) {
+		groupsLabel.setText(messages().get("label.left.pane.groups"));
+		onlineClientsLabel.setText(messages().get("label.left.pane.online.clients"));
 	}
 	
 	@FXML

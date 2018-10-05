@@ -7,14 +7,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.stream;
 import static java.util.HashMap.Entry;
 import static org.apache.commons.lang3.StringUtils.*;
 import static tp2.models.utils.Utils.isAny;
 
 public class I18n {
 	private static final Map<String, I18n> defaults = new HashMap<>();
-	
-	private static final String[] SUPPORTED_LOCALES = {"en"};
 	
 	static {
 		if (System.getProperty("user.language").equalsIgnoreCase("en"))
@@ -46,14 +45,16 @@ public class I18n {
 	@NotNull
 	private Map<String, String> init() {
 		return Collections.list(bundle.getKeys())
-		                  .stream()
-		                  .filter(key -> startsWithIgnoreCase(key, prefix))
-		                  .map(key -> Map.entry(stripStart(removeStartIgnoreCase(key, prefix), "."), key))
-		                  .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+				.stream()
+				.filter(key -> startsWithIgnoreCase(key, prefix))
+				.map(key -> Map.entry(stripStart(removeStartIgnoreCase(key, prefix), "."), key))
+				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 	}
 	
 	private I18n updated() {
-		return (!isAny(Locale.getDefault().getLanguage(), SUPPORTED_LOCALES) || bundle.getLocale().equals(Locale.getDefault()))
+		return (!isAny(Locale.getDefault().getLanguage(),
+		               stream(Language.values()).map(Language::getLocale).toArray(Locale[]::new))
+				|| bundle.getLocale().equals(Locale.getDefault()))
 		       ? this : bundle(bundle.getBaseBundleName()).withPrefix(prefix);
 	}
 	
@@ -93,5 +94,31 @@ public class I18n {
 	@NotNull
 	public String getPrefix() {
 		return prefix;
+	}
+	
+	public enum Language {
+		FR("Français", Locale.CANADA_FRENCH), EN("English", Locale.CANADA);
+		private final String lang;
+		private final Locale locale;
+		
+		Language(String lang, Locale locale) {
+			this.lang = lang;
+			this.locale = locale;
+		}
+		
+		public String getLang() {
+			return lang;
+		}
+		
+		public Locale getLocale() {
+			return locale;
+		}
+		
+		public static Language get(Locale locale) {
+			return stream(Language.values())
+					.filter(lang -> lang.getLocale().equals(locale))
+					.findAny()
+					.orElse(null);
+		}
 	}
 }

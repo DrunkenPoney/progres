@@ -14,9 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tp2.models.db.collections.Accessors;
@@ -29,6 +26,7 @@ import tp2.models.io.data.EventData.EventType;
 import tp2.models.io.data.FileData;
 import tp2.models.io.data.MessageData;
 import tp2.models.utils.Constants;
+import tp2.models.utils.I18n.Language;
 import tp2.models.utils.SGR;
 
 import java.io.File;
@@ -37,6 +35,7 @@ import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.*;
@@ -56,8 +55,11 @@ public class MainController extends Application {
 	private AnchorPane          contentPane;
 	@FXML
 	private ListView<FileData>  files;
+	
 	@FXML
-	private Button              btnSend;
+	private Label groupLabel, filesLabel;
+	@FXML
+	private Button btnLanguage, btnSend;
 	
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void main(String[] args) {
@@ -69,8 +71,8 @@ public class MainController extends Application {
 	
 	public static void print(String key, Object value) {
 		System.out.println(SGR.FG_BRIGHT_GREEN.wrap(key) +
-		                   SGR.FG_BRIGHT_YELLOW.wrap(" => ") +
-		                   SGR.FG_BRIGHT_CYAN.wrap(value));
+				                   SGR.FG_BRIGHT_YELLOW.wrap(" => ") +
+				                   SGR.FG_BRIGHT_CYAN.wrap(value));
 	}
 	
 	@Override
@@ -95,17 +97,20 @@ public class MainController extends Application {
 	
 	@FXML
 	private void initialize() {
+		setLanguage(System.getProperty("user.language").equalsIgnoreCase("en")
+		            ? Language.EN : Language.FR);
 		btnSend.disableProperty().bind(leftPanel.selectedGroupProperty().isNull());
 		Transmission.getInstance().addDataHandler(data -> Platform.runLater(() -> {
 			if (data instanceof MessageData)
 				chatMsg((MessageData) data);
 			else if (data instanceof FileData) {
 				files.getItems().add((FileData) data);
-				chatLog(data.getSender().getName(), " a envoyé ", ((FileData) data).getFileName(), ".");
+				chatLog(data.getSender().getName(),
+				        format(messages().get("event.file.sent"), ((FileData) data).getFileName()));
 			} else if (data instanceof EventData)
 				chatLog(data.getSender().getName(), ((EventData) data).getEvent() == EventType.GROUP_JOIN
-				                                    ? " a rejoind le groupe."
-				                                    : " a quitté le groupe.");
+				                                    ? messages().get("event.group.join")
+				                                    : messages().get("event.group.left"));
 		}));
 		leftPanel.selectedGroupProperty().addListener((o, oldValue, newValue) -> {
 			assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
@@ -114,18 +119,20 @@ public class MainController extends Application {
 				                                              EventType.GROUP_LEFT, oldValue));
 			if (newValue == null) {
 				chatLog(messages().get("chat.log.group.joined.null"));
+				groupLabel.setText(messages().get("label.group.default"));
 			} else {
 				Transmission.getInstance().send(new EventData(getLocalClientCollection().getLocalClient(),
 				                                              EventType.GROUP_JOIN, newValue));
 				chatLog(format(messages().get("chat.log.group.joined"), newValue.getName()));
+				groupLabel.setText(newValue.getName());
 			}
 			getLocalClientCollection().getLocalClient().setGroup(newValue);
 			getLocalClientCollection().saveLocalClient();
 		});
 		
 		leftPanel.prefWidthProperty()
-		         .addListener((observable, oldValue, newValue) ->
-				                      AnchorPane.setLeftAnchor(contentPane, newValue.doubleValue()));
+				.addListener((observable, oldValue, newValue) ->
+						             AnchorPane.setLeftAnchor(contentPane, newValue.doubleValue()));
 		AnchorPane.setLeftAnchor(contentPane, leftPanel.getPrefWidth());
 		
 		MenuItem sendFile = new MenuItem(messages().get("chat.context.menu.send.file"));
@@ -136,15 +143,15 @@ public class MainController extends Application {
 				List<File>  files   = chooser.showOpenMultipleDialog(chatBox.getScene().getWindow());
 				if (files != null && files.size() > 0) {
 					Flowable.fromIterable(files)
-					        .parallel()
-					        .runOn(Schedulers.io())
-					        .map(file -> new FileData(
-							        ((LocalClientCollection) getClientsCollection()).getLocalClient(),
-							        file.getName(), Files.readAllBytes(file.toPath()),
-							        group))
-					        .doOnNext(file -> Transmission.getInstance().send(file))
-					        .sequential()
-					        .subscribe();
+							.parallel()
+							.runOn(Schedulers.io())
+							.map(file -> new FileData(
+									((LocalClientCollection) getClientsCollection()).getLocalClient(),
+									file.getName(), Files.readAllBytes(file.toPath()),
+									group))
+							.doOnNext(file -> Transmission.getInstance().send(file))
+							.sequential()
+							.subscribe();
 				}
 			} else {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -154,6 +161,7 @@ public class MainController extends Application {
 			}
 		});
 		chatBox.setContextMenu(new ContextMenu(sendFile));
+		chatBox.getContextMenu().setPrefWidth(40);
 		
 		files.setCellFactory(params -> new ListCell<>() {
 			@Override
@@ -189,51 +197,64 @@ public class MainController extends Application {
 	}
 	
 	@FXML
+	private void switchLanguage(ActionEvent event) {
+		if (((Button) event.getSource()).getText().equalsIgnoreCase(Language.FR.getLang()))
+			setLanguage(Language.FR);
+		else setLanguage(Language.EN);
+	}
+	
+	private void setLanguage(Language lang) {
+		Locale.setDefault(lang.getLocale());
+		btnSend.setText(messages().get("btn.send.text"));
+		groupLabel.setText(messages().get("label.group.default"));
+		filesLabel.setText(messages().get("label.files"));
+		btnLanguage.setText(lang.equals(Language.EN) ? Language.FR.getLang() : Language.EN.getLang());
+		leftPanel.applyLanguage(lang);
+	}
+	
+	@FXML
 	@SuppressWarnings("unused")
 	private void send(ActionEvent event) {
 		assert getLocalClientCollection() != null : "LocalClientCollection hasn't been initialized";
 		if (isNotBlank(textField.getCharacters())) {
 			Transmission.getInstance()
-			            .send(new MessageData(getLocalClientCollection().getLocalClient(),
-			                                  textField.getText(),
-			                                  leftPanel.selectedGroupProperty().get()));
+					.send(new MessageData(getLocalClientCollection().getLocalClient(),
+					                      textField.getText(),
+					                      leftPanel.selectedGroupProperty().get()));
 			textField.setText("");
 		}
 	}
 	
 	private void chatLog(String name, String action, String... more) {
 		Platform.runLater(() -> {
-			Text n = new Text(name);
-			n.setFill(Color.AQUAMARINE);
-			n.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
-			Text act = new Text(action + String.join("", more));
-			act.setFill(Color.LIGHTGRAY);
-			act.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
+			Label n = new Label(name);
+			n.setStyle("-fx-text-fill: aquamarine");
+			n.setWrapText(true);
+			Label act = new Label(action + String.join("", more));
+			act.setStyle("-fx-text-fill: lightgray");
+			act.setWrapText(true);
 			chatBox.getItems().add(new HBox(n, act));
 		});
 	}
 	
 	private void chatLog(String log) {
 		Platform.runLater(() -> {
-			Text entry = new Text(log);
-			entry.setFill(Color.LIGHTGRAY);
-			entry.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
-			VBox box = new VBox(entry);
-			HBox.setHgrow(box, Priority.SOMETIMES);
-			chatBox.getItems().add(new HBox(box));
+			Label entry = new Label(log);
+			entry.setStyle("-fx-text-fill: lightgray");
+			entry.setWrapText(true);
+			HBox.setHgrow(entry, Priority.SOMETIMES);
+			chatBox.getItems().add(new HBox(entry));
 		});
 	}
 	
 	private void chatMsg(MessageData msg) {
 		Platform.runLater(() -> {
-			Text sender = new Text(msg.getSender().getName() + " :");
-			sender.setFill(Color.GREENYELLOW);
-			sender.setStyle("-fx-font-weight: bold");
-			sender.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
-			Text message = new Text(msg.getMessage());
-			message.setFill(Color.CADETBLUE);
-			message.wrappingWidthProperty().bind(chatBox.prefWidthProperty());
-			message.setStyle("-fx-border: 1px solid red");
+			Label sender = new Label(msg.getSender().getName() + " :");
+			sender.setStyle("-fx-font-weight: bold; -fx-text-fill: greenyellow");
+			sender.setWrapText(true);
+			Label message = new Label(msg.getMessage());
+			message.setStyle("-fx-text-fill: cadetblue");
+			message.setWrapText(true);
 			VBox box = new VBox(sender, message);
 			HBox.setHgrow(box, Priority.SOMETIMES);
 			chatBox.getItems().add(new HBox(box));
@@ -244,9 +265,8 @@ public class MainController extends Application {
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setHeaderText(messages().get("dialog.name.choice.header"));
 		dialog.setTitle(messages().get("dialog.name.choice.title"));
-		dialog.getDialogPane().getContent().setStyle("-fx-text-fill: red");
 		dialog.getDialogPane().lookupButton(ButtonType.OK).disableProperty()
-		      .bind(dialog.getEditor().textProperty().isEmpty());
+				.bind(dialog.getEditor().textProperty().isEmpty());
 		dialog.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 			if (length(trim(deleteWhitespace(newValue))) != length(newValue))
 				dialog.getEditor().setText(trim(deleteWhitespace(newValue)));

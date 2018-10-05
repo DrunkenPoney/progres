@@ -1,5 +1,4 @@
 @import 'remove-default-shit-from-motherfucking-modena.css';
-//@import 'fonts';
 
 $main-color: #0C9;
 $background: #222;
@@ -30,8 +29,8 @@ $background: #222;
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: lighten($background, 15%);
-    -fx-text-fill: lighten($main-color, 10%);
+    -fx-background-color: black;
+    -fx-font-weight: bold;
 }
 
 .list-cell:even {
@@ -42,9 +41,14 @@ $background: #222;
     -fx-background-color: darken($background, 5%);
 }
 
-.list-cell:filled:hover {
+.list-cell:filled:hover, .menu-item:focused {
     -fx-background-color: lighten($background, 5%);
     -fx-text-fill: $main-color;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: lighten($main-color, 15%);
+    -fx-font-weight: bold;
 }
 
 .font-awesome {
