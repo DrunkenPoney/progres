@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <artifactId>progres-tp3-client</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <artifactId>progres-tp3-parent</artifactId>
+        <groupId>com.github.drunkenponey.progres</groupId>
+        <version>1.0.0</version>
+    </parent>
+    
+    <dependencies>
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjavafx</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>${compiler.version}</source>
+                    <target>${compiler.version}</target>
+                </configuration>
+            </plugin>
+            
+            <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPILE-SCSS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+            <plugin>
+                <groupId>com.github.warmuuh</groupId>
+                <artifactId>libsass-maven-plugin</artifactId>
+                <version>0.2.10-libsass_3.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputPath>${basedir}/src/main/resources/css/</inputPath>
+                    <outputPath>${basedir}/target/classes/css/</outputPath>
+                    <outputStyle>compact</outputStyle>
+                    <generateSourceMap>false</generateSourceMap>
+                    <inputSyntax>scss</inputSyntax>
+                </configuration>
+            </plugin>
+    
+            <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD-JAR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>${application.main.class}</Main-Class>
+                            <implementation-version>${application.version}</implementation-version>
+                            <JavaFX-Application-Class>${application.main.class}</JavaFX-Application-Class>
+                        </manifestEntries>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+    
+            <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ANTRUN-SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <!-- define the deploy ANT task -->
+                                <taskdef name="jfxdeploy" classname="com.sun.javafx.tools.ant.DeployFXTask"
+                                         classpathref="maven.plugin.classpath"/>
+                        
+                                <!-- define the JarSing ANT task -->
+                                <!-- taskdef name="jfxsignjar" classname="com.sun.javafx.tools.ant.FXSignJarTask"
+                                    classpathref="maven.plugin.classpath" / -->
+                                <jfxdeploy outdir="${project.build.directory}/deploy"
+                                           outfile="${build.finalName}" nativeBundles="all">
+                                    <info title="${application.name}"/>
+                                    <!-- set the main class of your applcation -->
+                                    <application name="${application.name}"
+                                                 mainClass="${application.main.class}"/>
+                                    <resources>
+                                        <fileset dir="${project.build.directory}" includes="*.jar"/>
+                                        <fileset dir="${project.build.directory}/dependency"
+                                                 includes="*.jar"/>
+                                        <!--<fileset dir="${project.build.directory}/properties" includes="*.properties"/>-->
+                                    </resources>
+                            
+                                    <!-- set your jvm args -->
+                                    <platform>
+                                        <jvmarg value="-Xms512m"/>
+                                        <jvmarg value="-Xmx1024m"/>
+                                    </platform>
+                                </jfxdeploy>
+                                <!-- you need to generate a key yourself -->
+                                <!--jfxsignjar destdir="${project.build.directory}/deploy" keyStore="path/to/your/keystore"
+                                    storePass="yourPass" alias="yourAlias" keyPass="keyPass"> <fileset dir="${project.build.directory}/deploy"
+                                    includes="*.jar" /> </jfxsignjar -->
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
