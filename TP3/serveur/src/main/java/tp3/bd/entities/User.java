@@ -2,7 +2,7 @@ package tp3.bd.entities;
 
 import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.*;
-import tp3.EncryptionUtils;
+import tp3.utils.EncryptionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

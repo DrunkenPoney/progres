@@ -1,4 +1,4 @@
-package tp3;
+package tp3.utils;
 
 import org.apache.commons.lang3.RandomUtils;
 
