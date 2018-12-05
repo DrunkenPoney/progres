@@ -23,29 +23,29 @@ Le serveur stockera les commandes sous forme de liste ou dans une BD et offrira 
 
 ```tcl
 Commande
-	+-- Pizza
-		+-- Sorte
-			+-- Fromage
-			+-- Peppéroni
-			+-- Bacon
-			+-- Garnie
-			+-- Végétarienne
-		+-- Prix
-		+-- État
-			+-- En attente
-			+-- En cuisson
-			+-- Prête
-			+-- En livraison
-			+-- Livrée
-			+-- Annulée
-	+-- Numéro de commande
-	+-- Coordonnées du client
-		+-- Nom
-		+-- Prénom
-		+-- Adresses
-		+-- Code Postal
-		+-- Ville
-		+-- Numéro de téléphone
+    +-- Pizza
+        +-- Sorte
+            +-- Fromage
+            +-- Peppéroni
+            +-- Bacon
+            +-- Garnie
+            +-- Végétarienne
+        +-- Prix
+        +-- État
+            +-- En attente
+            +-- En cuisson
+            +-- Prête
+            +-- En livraison
+            +-- Livrée
+            +-- Annulée
+    +-- Numéro de commande
+    +-- Coordonnées du client
+        +-- Nom
+        +-- Prénom
+        +-- Adresses
+        +-- Code Postal
+        +-- Ville
+        +-- Numéro de téléphone
 ```
 
 ### Application Client
@@ -71,9 +71,9 @@ Dans cette application, le client peut :
 
 Le Pizzaman d’une succursale pourra consulter les commandes en invoquant les ressources du serveur. Dans cette application, le Pizzaman peut :
 
-- Afficher 	les commandes qui sont seulement « *en attente* » et « *en cuisson* »
+- Afficher les commandes qui sont seulement « *en attente* » et « *en cuisson* »
 - Modifier l’état
-  - Modifier	l’état d’une commande selon le numéro de commande
+  - Modifier l’état d’une commande selon le numéro de commande
   - Peut seulement changer à « *en cuisson* » et « *prête* » pour livraison
 
 ### Application Livreur

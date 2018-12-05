@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Initialization</title>
+</head>
+<body>
+
+<script type="application/javascript" src="js/volumeunits.js"></script>
+<script type="application/javascript">
+    (async () => {
+        let results = window.results = await initVolumeUnits();
+        console.log(results);
+    })();
+</script>
+</body>
+</html>
