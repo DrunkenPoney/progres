@@ -18,7 +18,7 @@ public class IngredientDao extends BaseDao<IngredientBo> implements IIngredientD
 	public IngredientBo getByKey(String key) {
 		CriteriaQuery<IngredientBo> query = query();
 		query.where(getCriteriaBuilder().equal(
-			query.from(IngredientBo.class).get("key"), key));
+			query.from(entity()).get("key"), key));
 		return getEntityManager().createQuery(query).getSingleResult();
 	}
 }

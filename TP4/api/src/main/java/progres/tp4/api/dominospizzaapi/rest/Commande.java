@@ -44,7 +44,8 @@ public class Commande {
 		if (commande == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
 		commande.validate();
-		return Response.ok(commandeDao.create(commande)).build();
+		commandeDao.create(commande);
+		return Response.ok(commande.getId()).build();
 	}
 	
 	@PUT
@@ -64,7 +65,7 @@ public class Commande {
 	@Path("/{id}/delete")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response delete(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		commandeDao.delete(validateId(id));
+		commandeDao.delete(commandeDao.get(validateId(id)));
 		return Response.ok().build();
 	}
 }

@@ -17,7 +17,7 @@ public class PizzaStateDao extends BaseDao<PizzaStateBo> implements IPizzaStateD
 	public PizzaStateBo getByKey(String key) {
 		CriteriaQuery<PizzaStateBo> query = query();
 		query.where(getCriteriaBuilder().equal(
-			query.from(PizzaStateBo.class).get("key"), key));
+			query.from(entity()).get("key"), key));
 		return getEntityManager().createQuery(query).getSingleResult();
 	}
 }

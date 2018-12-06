@@ -10,4 +10,9 @@ public class ClientDao extends BaseDao<ClientBo> implements IClientDao {
 	protected Class<ClientBo> entity() {
 		return ClientBo.class;
 	}
+	
+	@Override
+	public ClientBo get(Long id) {
+		return getEntityManager().find(entity(), id);
+	}
 }

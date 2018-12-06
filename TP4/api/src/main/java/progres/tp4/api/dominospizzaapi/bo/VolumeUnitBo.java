@@ -17,15 +17,12 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 @Entity
 @Table(name = "volume_unit_vun")
 @SuppressWarnings("unused")
-public class VolumeUnitBo extends BaseBo {
-	@Id
-	@GeneratedValue
-	@Column(name = "id_vun", nullable = false)
-	private Long id;
+public class VolumeUnitBo implements IBaseBo {
 	
+	@Id
 	@NotBlank(message = MSG_BLANK_KEY)
 	@Pattern(regexp = ENTITY_KEY_PATTERN, message = MSG_INVALID_KEY)
-	@Column(name = "key_vun", nullable = false, unique = true, updatable = false)
+	@Column(name = "key_vun", nullable = false, updatable = false)
 	private String key;
 	
 	@NotBlank(message = MSG_BLANK_TITLE)
@@ -39,15 +36,6 @@ public class VolumeUnitBo extends BaseBo {
 	@Min(value = 0, message = MSG_MODIFIER_MIN_ZERO)
 	@Column(name = "modifier", nullable = false, precision = 65)
 	private double modifier;
-	
-	@Override
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
 	
 	public String getKey() {
 		return key;

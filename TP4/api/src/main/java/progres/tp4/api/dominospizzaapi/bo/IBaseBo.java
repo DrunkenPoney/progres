@@ -1,8 +1,7 @@
 package progres.tp4.api.dominospizzaapi.bo;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-
-import javax.persistence.Id;
+import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.*;
 
@@ -12,14 +11,6 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.*;
 	getterVisibility = NONE,
 	setterVisibility = NONE,
 	creatorVisibility = DEFAULT)
-public abstract class BaseBo implements IValidated {
-	
-	@Id
-	public abstract Long getId();
-	
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof BaseBo && ( (BaseBo) obj ).getId().equals(getId());
-	}
-	
+public interface IBaseBo {
+	void validate() throws RequestValidationException;
 }

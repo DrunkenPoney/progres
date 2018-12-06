@@ -12,59 +12,57 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_MISSING_BODY;
-import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_REQUIRED_ID;
-import static progres.tp4.api.dominospizzaapi.util.Validation.validateId;
+import static progres.tp4.api.dominospizzaapi.util.Validation.validateKey;
 
 @Service
 @Path("/pizza/type")
 public class PizzaType {
 	
 	@Autowired
-	private IPizzaTypeDao clientDao;
+	private IPizzaTypeDao pizzaTypeDao;
 	
 	@GET
-	@Path("/{id}/get")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response get(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		return Response.ok(clientDao.get(validateId(id))).build();
+	@Path("/{key}/get")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response get(@PathParam("key") String key) throws RequiredParamException {
+		return Response.ok(pizzaTypeDao.getByKey(validateKey(key))).build();
 	}
 	
 	@GET
 	@Path("/all")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response all() {
-		return Response.ok(clientDao.all()).build();
+		return Response.ok(pizzaTypeDao.all()).build();
 	}
 	
 	@POST
 	@Path("/add")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response add(PizzaTypeBo type) throws RequestValidationException {
 		if (type == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
 		type.validate();
-		return Response.ok(clientDao.create(type)).build();
+		pizzaTypeDao.create(type);
+		return Response.ok(type.getKey()).build();
 	}
 	
 	@PUT
 	@Path("/edit")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response edit(PizzaTypeBo type) throws RequestValidationException {
 		if (type == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
-		if (type.getId() == null)
-			throw new RequestValidationException(MSG_REQUIRED_ID);
 		type.validate();
-		return Response.ok(clientDao.update(type)).build();
+		return Response.ok(pizzaTypeDao.update(type)).build();
 	}
 	
 	@DELETE
-	@Path("/{id}/delete")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Response delete(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		clientDao.delete(validateId(id));
+	@Path("/{key}/delete")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public Response delete(@PathParam("key") String key) throws RequiredParamException {
+		pizzaTypeDao.delete(pizzaTypeDao.getByKey(validateKey(key)));
 		return Response.ok().build();
 	}
 }

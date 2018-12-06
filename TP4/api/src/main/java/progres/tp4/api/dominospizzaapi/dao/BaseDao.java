@@ -1,7 +1,7 @@
 package progres.tp4.api.dominospizzaapi.dao;
 
 import org.springframework.transaction.annotation.Transactional;
-import progres.tp4.api.dominospizzaapi.bo.BaseBo;
+import progres.tp4.api.dominospizzaapi.bo.IBaseBo;
 import progres.tp4.api.dominospizzaapi.dao.interfaces.IBaseDao;
 
 import javax.persistence.EntityManager;
@@ -11,7 +11,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 @SuppressWarnings("unused")
-abstract class BaseDao<BO extends BaseBo> implements IBaseDao<BO> {
+@Transactional
+abstract class BaseDao<BO extends IBaseBo> implements IBaseDao<BO> {
 	
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -35,10 +36,9 @@ abstract class BaseDao<BO extends BaseBo> implements IBaseDao<BO> {
 		return getCriteriaBuilder().createQuery(entity());
 	}
 	
-	@Override
-	public BO get(Long id) {
-		return getEntityManager().find(entity(), id);
-	}
+//	public BO get(Long id) {
+//		return getEntityManager().find(entity(), id);
+//	}
 	
 	@Override
 	public List<BO> all() {
@@ -46,21 +46,17 @@ abstract class BaseDao<BO extends BaseBo> implements IBaseDao<BO> {
 	}
 	
 	@Override
-	@Transactional
-	public Long create(BO obj) {
+	public void create(BO obj) {
 		getEntityManager().persist(obj);
-		return obj.getId();
 	}
 	
 	@Override
-	@Transactional
 	public BO update(BO obj) {
 		return getEntityManager().merge(obj);
 	}
 	
 	@Override
-	@Transactional
-	public void delete(Long id) {
-		getEntityManager().remove(get(id));
+	public void delete(BO obj) {
+		getEntityManager().remove(obj);
 	}
 }

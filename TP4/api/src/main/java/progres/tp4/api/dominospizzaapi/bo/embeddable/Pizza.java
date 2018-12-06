@@ -1,31 +1,35 @@
 package progres.tp4.api.dominospizzaapi.bo.embeddable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.ColumnDefault;
 import org.jetbrains.annotations.NotNull;
-import progres.tp4.api.dominospizzaapi.bo.IValidated;
-import progres.tp4.api.dominospizzaapi.bo.PizzaSizeBo;
-import progres.tp4.api.dominospizzaapi.bo.PizzaStateBo;
-import progres.tp4.api.dominospizzaapi.bo.PizzaTypeBo;
+import progres.tp4.api.dominospizzaapi.bo.*;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static progres.tp4.api.dominospizzaapi.util.Utils.msgRequiredAttr;
+
 @Embeddable
 @SuppressWarnings("unused")
-public class Pizza implements IValidated {
+public class Pizza implements IBaseBo {
 	
-	@ManyToOne
-	@JoinColumn(name = "id_pty", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "key_pty", nullable = false)
 	private PizzaTypeBo type;
 	
-	@ManyToOne
-	@JoinColumn(name = "id_psi", nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "key_psi", nullable = false)
 	private PizzaSizeBo size;
 	
-	@ManyToOne
-	@JoinColumn(name = "id_pst", nullable = false)
-//	@ColumnDefault("") // TODO << WAITING
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "key_pst", nullable = false)
+	@ColumnDefault("WAITING")
 	private PizzaStateBo state;
 	
 	public PizzaTypeBo getType() {
@@ -44,8 +48,9 @@ public class Pizza implements IValidated {
 		this.size = size;
 	}
 	
+	@JsonProperty(value = "price", access = READ_ONLY)
 	public double getPrice() {
-		return getType().getBasePrice() * getSize().getPriceMod();
+		return getType().getPriceMod() * getSize().getBasePrice();
 	}
 	
 	public PizzaStateBo getState() {
@@ -58,8 +63,27 @@ public class Pizza implements IValidated {
 	
 	@Override
 	public void validate() throws RequestValidationException {
-		// TODO validate => id not null => type, size, state
+		if (getType() == null)
+			throw new RequestValidationException(msgRequiredAttr("type", "pizza"));
+		if (getSize() == null)
+			throw new RequestValidationException(msgRequiredAttr("size", "pizza"));
+		if (getState() == null)
+			throw new RequestValidationException(msgRequiredAttr("state", "pizza"));
+		
+		if (isBlank(getType().getKey()))
+			throw new RequestValidationException(msgRequiredAttr("key", "type"));
+		if (isBlank(getSize().getKey()))
+			throw new RequestValidationException(msgRequiredAttr("key", "size"));
+		if (isBlank(getState().getKey()))
+			throw new RequestValidationException(msgRequiredAttr("key", "state"));
 	}
 	
+	@JsonProperty(value = "cost", access = READ_ONLY)
+	public double getCost() {
+		return getType().getIngredients()
+		                .stream()
+			.mapToDouble(PizzaIngredientBo::getCost)
+			.sum();
+	}
 	// TODO getCost
 }

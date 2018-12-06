@@ -19,13 +19,10 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 @Entity
 @Table(name = "ingredient_ing")
 @SuppressWarnings("unused")
-public class IngredientBo extends BaseBo {
+public class IngredientBo implements IBaseBo {
 	
 	@Id
-	@GeneratedValue
-	@Column(name = "id_ing", nullable = false)
-	private Long id;
-	
+	@NotBlank(message = MSG_BLANK_KEY)
 	@Pattern(regexp = ENTITY_KEY_PATTERN, message = MSG_INVALID_KEY)
 	@Column(name = "key_ing", nullable = false, unique = true, updatable = false)
 	private String key;
@@ -40,15 +37,6 @@ public class IngredientBo extends BaseBo {
 	
 	@Embedded
 	private Volume volume;
-	
-	@Override
-	public Long getId() {
-		return id;
-	}
-	
-	public void setId(@NotNull Long id) {
-		this.id = id;
-	}
 	
 	public String getKey() {
 		return key;

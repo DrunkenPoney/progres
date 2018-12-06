@@ -20,7 +20,7 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 @Entity
 @Table(name = "client_cli")
 @SuppressWarnings("unused")
-public class ClientBo extends BaseBo {
+public class ClientBo implements IBaseBo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -52,7 +52,6 @@ public class ClientBo extends BaseBo {
 	@Column(name = "phone", nullable = false, length = 15, unique = true)
 	private String phone;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}

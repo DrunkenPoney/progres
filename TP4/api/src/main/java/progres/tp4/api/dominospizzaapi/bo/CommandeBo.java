@@ -8,9 +8,10 @@ import javax.persistence.*;
 
 import static progres.tp4.api.dominospizzaapi.util.Utils.msgRequiredAttr;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "commande_cmd")
-public class CommandeBo extends BaseBo {
+public class CommandeBo implements IBaseBo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -24,7 +25,6 @@ public class CommandeBo extends BaseBo {
 	@JoinColumn(name = "id_cli")
 	private ClientBo client;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}

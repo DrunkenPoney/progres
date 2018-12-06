@@ -1,7 +1,6 @@
 package progres.tp4.api.dominospizzaapi.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import progres.tp4.api.dominospizzaapi.bo.ClientBo;
 import progres.tp4.api.dominospizzaapi.dao.interfaces.IClientDao;
@@ -43,7 +42,8 @@ public class Client {
 		if (client == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
 		client.validate();
-		return Response.ok(clientDao.create(client)).build();
+		clientDao.create(client);
+		return Response.ok(client.getId()).build();
 	}
 	
 	@PUT
@@ -61,7 +61,7 @@ public class Client {
 	@Path("/{id}/delete")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response delete(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		clientDao.delete(validateId(id));
+		clientDao.delete(clientDao.get(validateId(id)));
 		return Response.ok().build();
 	}
 }

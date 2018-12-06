@@ -11,13 +11,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.apache.commons.lang3.StringUtils.upperCase;
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_MISSING_BODY;
-import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_REQUIRED_ID;
-import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
-import static progres.tp4.api.dominospizzaapi.util.Validation.requiredParam;
-import static progres.tp4.api.dominospizzaapi.util.Validation.validateId;
+import static progres.tp4.api.dominospizzaapi.util.Validation.validateKey;
 
 @Service
 @Path("/volume-unit")
@@ -27,18 +22,10 @@ public class VolumeUnit {
 	private IVolumeUnitDao volumeUnitDao;
 	
 	@GET
-	@Path("/{id}/get")
+	@Path("/{key}/get")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response get(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		return Response.ok(volumeUnitDao.get(validateId(id))).build();
-	}
-	
-	@GET
-	@Path("/{key}/getByKey")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response getByKey(@PathParam("key") String key) throws RequiredParamException {
-		return Response.ok(volumeUnitDao.getByKey(requiredParam(upperCase(trimToNull(normalizeSpaces(key))), "key")))
-		               .build();
+	public Response get(@PathParam("key") String key) throws RequiredParamException {
+		return Response.ok(volumeUnitDao.getByKey(validateKey(key))).build();
 	}
 	
 	@GET
@@ -56,7 +43,8 @@ public class VolumeUnit {
 		if (volume == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
 		volume.validate();
-		return Response.ok(volumeUnitDao.create(volume)).build();
+		volumeUnitDao.create(volume);
+		return Response.ok(volume.getKey()).build();
 	}
 	
 	@PUT
@@ -66,17 +54,15 @@ public class VolumeUnit {
 	public Response edit(VolumeUnitBo volume) throws RequestValidationException {
 		if (volume == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
-		if (volume.getId() == null)
-			throw new RequestValidationException(MSG_REQUIRED_ID);
 		volume.validate();
 		return Response.ok(volumeUnitDao.update(volume)).build();
 	}
 	
 	@DELETE
-	@Path("/{id}/delete")
+	@Path("/{key}/delete")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response delete(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
-		volumeUnitDao.delete(validateId(id));
+	public Response delete(@PathParam("key") String key) throws RequiredParamException {
+		volumeUnitDao.delete(volumeUnitDao.getByKey(validateKey(key)));
 		return Response.ok().build();
 	}
 }

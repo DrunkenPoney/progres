@@ -49,4 +49,12 @@ public final class Validation {
 			throw new RequestValidationException(MSG_INVALID_PARAM_ID, err);
 		}
 	}
+	
+	public static String validateKey(String key) throws RequiredParamException {
+		return validateKey(key, "key");
+	}
+	
+	public static String validateKey(String key, String attrName) throws RequiredParamException {
+		return requiredParam(upperCase(trimToNull(normalizeSpace(key))), attrName);
+	}
 }
