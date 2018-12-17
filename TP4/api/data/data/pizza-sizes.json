@@ -1,0 +1,22 @@
+[
+  {
+    "key": "SMALL",
+    "title": "Petite",
+    "inches": 10
+  },
+  {
+    "key": "REGULAR",
+    "title": "Régulière",
+    "inches": 12
+  },
+  {
+    "key": "BIG",
+    "title": "Grande",
+    "inches": 14
+  },
+  {
+    "key": "HUGE",
+    "title": "Très grande",
+    "inches": 16
+  }
+]

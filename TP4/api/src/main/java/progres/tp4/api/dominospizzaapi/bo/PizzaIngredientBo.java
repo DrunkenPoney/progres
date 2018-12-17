@@ -1,6 +1,7 @@
 package progres.tp4.api.dominospizzaapi.bo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.hibernate.annotations.Fetch;
 import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.bo.embeddable.Volume;
@@ -16,17 +17,14 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.msgRequiredAttr;
 
 @Entity
 @Table(name = "pty_ing_pti")
+@JsonRootName("pizzaIngredient")
 @SuppressWarnings("unused")
 @IdClass(PizzaIngredientBo.PKPizzaIngredient.class)
 public class PizzaIngredientBo implements IBaseBo {
 	@Id
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "key_ing", updatable = false, nullable = false)
 	private IngredientBo ingredient;
 	
 	@Id
-	@OneToOne
-	@JoinColumn(name = "key_pty", updatable = false, nullable = false)
 	private PizzaTypeBo type;
 	
 	@Embedded
@@ -80,7 +78,13 @@ public class PizzaIngredientBo implements IBaseBo {
 	
 	public static class PKPizzaIngredient implements Serializable {
 		private static final long serialVersionUID = -2657027976555388891L;
+		
+		@OneToOne(fetch = FetchType.EAGER)
+		@JoinColumn(name = "key_pty", updatable = false, nullable = false)
 		private IngredientBo ingredient;
+		
+		@OneToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "key_ing", updatable = false, nullable = false)
 		private PizzaTypeBo type;
 		
 		private PKPizzaIngredient() {}

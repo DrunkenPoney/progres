@@ -18,6 +18,6 @@ public class VolumeUnitDao extends BaseDao<VolumeUnitBo> implements IVolumeUnitD
 		CriteriaQuery<VolumeUnitBo> query = query();
 		query.where(getCriteriaBuilder().equal(
 			query.from(entity()).get("key"), key));
-		return getEntityManager().createQuery(query).getSingleResult();
+		return getEntityManager().createQuery(query).getResultStream().findFirst().orElse(null);
 	}
 }

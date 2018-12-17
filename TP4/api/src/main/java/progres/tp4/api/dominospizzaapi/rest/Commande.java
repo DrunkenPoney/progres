@@ -11,6 +11,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.sql.Date;
+import java.time.Instant;
+
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_MISSING_BODY;
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_REQUIRED_ID;
 import static progres.tp4.api.dominospizzaapi.util.Validation.validateId;
@@ -43,6 +46,7 @@ public class Commande {
 	public Response add(CommandeBo commande) throws RequestValidationException {
 		if (commande == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
+		commande.setDateCreated(new Date(Instant.now().toEpochMilli()));
 		commande.validate();
 		commandeDao.create(commande);
 		return Response.ok(commande.getId()).build();
@@ -55,9 +59,11 @@ public class Commande {
 	public Response edit(CommandeBo commande) throws RequestValidationException {
 		if (commande == null)
 			throw new RequestValidationException(MSG_MISSING_BODY);
+		commande.setDateUpdated(new Date(Instant.now().toEpochMilli()));
 		commande.validate();
 		if (commande.getId() == null)
 			throw new RequestValidationException(MSG_REQUIRED_ID);
+		commande.setDateCreated(commandeDao.get(commande.getId()).getDateCreated());
 		return Response.ok(commandeDao.update(commande)).build();
 	}
 	

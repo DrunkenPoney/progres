@@ -1,5 +1,6 @@
 package progres.tp4.api.dominospizzaapi.bo;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.bo.embeddable.Volume;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
@@ -18,6 +19,7 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 
 @Entity
 @Table(name = "ingredient_ing")
+@JsonRootName("ingredient")
 @SuppressWarnings("unused")
 public class IngredientBo implements IBaseBo {
 	

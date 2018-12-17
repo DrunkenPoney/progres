@@ -1,5 +1,6 @@
 package progres.tp4.api.dominospizzaapi.bo.embeddable;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.bo.IBaseBo;
 import progres.tp4.api.dominospizzaapi.bo.VolumeUnitBo;
@@ -13,6 +14,7 @@ import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_VOLUME_MIN_ZERO;
 import static progres.tp4.api.dominospizzaapi.util.Utils.msgRequiredAttr;
 
 @Embeddable
+@JsonRootName("volume")
 @SuppressWarnings("unused")
 public class Volume implements IBaseBo {
 	

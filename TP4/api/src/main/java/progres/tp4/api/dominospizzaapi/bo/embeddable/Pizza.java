@@ -1,21 +1,21 @@
 package progres.tp4.api.dominospizzaapi.bo.embeddable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.hibernate.annotations.ColumnDefault;
 import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.bo.*;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static progres.tp4.api.dominospizzaapi.util.Utils.msgRequiredAttr;
 
 @Embeddable
+@JsonRootName("pizza")
 @SuppressWarnings("unused")
 public class Pizza implements IBaseBo {
 	
@@ -29,8 +29,11 @@ public class Pizza implements IBaseBo {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "key_pst", nullable = false)
-	@ColumnDefault("WAITING")
 	private PizzaStateBo state;
+	
+	@Min(1)
+	@Column(name = "quantity", nullable = false)
+	private int quantity;
 	
 	public PizzaTypeBo getType() {
 		return type;
@@ -48,17 +51,20 @@ public class Pizza implements IBaseBo {
 		this.size = size;
 	}
 	
-	@JsonProperty(value = "price", access = READ_ONLY)
-	public double getPrice() {
-		return getType().getPriceMod() * getSize().getBasePrice();
-	}
-	
 	public PizzaStateBo getState() {
 		return state;
 	}
 	
 	public void setState(@NotNull PizzaStateBo state) {
 		this.state = state;
+	}
+	
+	public int getQuantity() {
+		return quantity;
+	}
+	
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 	
 	@Override

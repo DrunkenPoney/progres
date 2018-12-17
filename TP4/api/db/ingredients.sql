@@ -1,1 +1,0 @@
-INSERT INTO ingredient_ing(title_ing, cost_ing, volume_ing) VALUES ()

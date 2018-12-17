@@ -45,7 +45,7 @@ public class PizzaIngredient {
 	public Response add(PizzaIngredientBo pi) throws RequestValidationException {
 		if (pi == null) throw new RequestValidationException(MSG_MISSING_BODY);
 		pi.validate();
-		pizzaIngredientDao.create(pi);
+ 		pizzaIngredientDao.create(pi);
 		return Response.ok(pi).build();
 	}
 	

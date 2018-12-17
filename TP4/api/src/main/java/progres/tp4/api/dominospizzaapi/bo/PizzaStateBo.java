@@ -1,5 +1,6 @@
 package progres.tp4.api.dominospizzaapi.bo;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 
@@ -15,6 +16,7 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 
 @Entity
 @Table(name = "pizza_state_pst")
+@JsonRootName("pizzaState")
 public class PizzaStateBo implements IBaseBo {
 	
 	@Id
@@ -26,6 +28,9 @@ public class PizzaStateBo implements IBaseBo {
 	@NotBlank(message = MSG_BLANK_TITLE)
 	@Column(name = "title", nullable = false)
 	private String title;
+	
+	@Column(name = "order_pst", nullable = false)
+	private int order;
 	
 	public String getKey() {
 		return key;
@@ -41,6 +46,14 @@ public class PizzaStateBo implements IBaseBo {
 	
 	public void setTitle(@NotNull String title) {
 		this.title = title;
+	}
+	
+	public int getOrder() {
+		return order;
+	}
+	
+	public void setOrder(int order) {
+		this.order = order;
 	}
 	
 	@Override

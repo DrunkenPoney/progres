@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import progres.tp4.api.dominospizzaapi.bo.ClientBo;
 import progres.tp4.api.dominospizzaapi.dao.interfaces.IClientDao;
+import progres.tp4.api.dominospizzaapi.dao.interfaces.ICommandeDao;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 import progres.tp4.api.dominospizzaapi.errors.RequiredParamException;
 
@@ -11,7 +12,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.trim;
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_MISSING_BODY;
+import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
+import static progres.tp4.api.dominospizzaapi.util.Validation.requiredParam;
 import static progres.tp4.api.dominospizzaapi.util.Validation.validateId;
 
 @Service
@@ -20,11 +25,29 @@ public class Client {
 	@Autowired
 	private IClientDao clientDao;
 	
+	@Autowired
+	private ICommandeDao commandeDao;
+	
 	@GET
 	@Path("/{id}/get")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response get(@PathParam("id") String id) throws RequiredParamException, RequestValidationException {
 		return Response.ok(clientDao.get(validateId(id))).build();
+	}
+	
+	@GET
+	@Path("/{id}/get/commandes")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response listCommandes(@PathParam("id") String clientId) throws RequiredParamException, RequestValidationException {
+		return Response.ok(commandeDao.byClient(clientDao.get(validateId(clientId)))).build();
+	}
+	
+	@GET
+	@Path("/{username}/getByUsername")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response byUsername(@PathParam("username") String username) throws RequiredParamException {
+		return Response.ok(clientDao.getByUsername(
+			requiredParam(trim(lowerCase(normalizeSpaces(username))), "username"))).build();
 	}
 	
 	@GET

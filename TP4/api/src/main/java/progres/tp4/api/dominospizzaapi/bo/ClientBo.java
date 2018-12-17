@@ -1,5 +1,6 @@
 package progres.tp4.api.dominospizzaapi.bo;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
@@ -8,9 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static progres.tp4.api.dominospizzaapi.util.Constants.PHONE_PATTERN;
 import static progres.tp4.api.dominospizzaapi.util.Constants.POSTAL_CODE_PATTERN;
@@ -19,6 +23,7 @@ import static progres.tp4.api.dominospizzaapi.util.Utils.normalizeSpaces;
 
 @Entity
 @Table(name = "client_cli")
+@JsonRootName("client")
 @SuppressWarnings("unused")
 public class ClientBo implements IBaseBo {
 	
@@ -26,6 +31,11 @@ public class ClientBo implements IBaseBo {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "id_cli", nullable = false)
 	private Long id;
+	
+	@NotBlank
+	@Length(min = 3, max = 255)
+	@Column(name = "username", nullable = false, unique = true, updatable = false)
+	private String username;
 	
 	@NotBlank(message = MSG_BLANK_FIRST_NAME)
 	@Column(name = "first_name", nullable = false)
@@ -49,15 +59,23 @@ public class ClientBo implements IBaseBo {
 	private String city;
 	
 	@Pattern(regexp = PHONE_PATTERN, message = MSG_INVALID_PHONE)
-	@Column(name = "phone", nullable = false, length = 15, unique = true)
+	@Column(name = "phone", nullable = false)
 	private String phone;
 	
 	public Long getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(@NotNull String username) {
+		this.username = username;
 	}
 	
 	public String getFirstName() {
@@ -115,6 +133,7 @@ public class ClientBo implements IBaseBo {
 		setLastName(trim(normalizeSpaces(getLastName())));
 		setCity(trim(normalizeSpaces(getCity())));
 		setPostalCode(trim(normalizeSpaces(getPostalCode())));
+		setUsername(lowerCase(trim(normalizeSpaces(getUsername()))));
 		
 		final PhoneNumberUtil phu = PhoneNumberUtil.getInstance();
 		try {

@@ -2,6 +2,7 @@ package progres.tp4.api.dominospizzaapi.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import progres.tp4.api.dominospizzaapi.bo.PizzaStateBo;
 import progres.tp4.api.dominospizzaapi.dao.interfaces.IPizzaStateDao;
 import progres.tp4.api.dominospizzaapi.errors.RequestValidationException;
@@ -14,7 +15,7 @@ import javax.ws.rs.core.Response;
 import static progres.tp4.api.dominospizzaapi.util.Messages.MSG_MISSING_BODY;
 import static progres.tp4.api.dominospizzaapi.util.Validation.validateKey;
 
-@Component
+@Service
 @Path("/pizza/state")
 public class PizzaState {
 	
