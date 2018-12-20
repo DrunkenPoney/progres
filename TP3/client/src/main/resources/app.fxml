@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import tp3.CloseButton?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+
+<StackPane stylesheets="css/style.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="tp3.controllers.MainController">
+    <VBox>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Close"/>
+            </Menu>
+            <Menu text="Edit">
+                <MenuItem text="Delete"/>
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About"/>
+            </Menu>
+        </MenuBar>
+        <SplitPane dividerPositions="0.5" prefHeight="800.0" prefWidth="1200.0" VBox.vgrow="ALWAYS">
+            <Accordion>
+                <panes>
+                    <TitledPane text="Réservations">
+                        <AnchorPane>
+                            <VBox AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0"
+                                  AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-10.0">
+                                <ListView fx:id="reservList" VBox.vgrow="ALWAYS"/>
+                                <HBox>
+                                    <Button onAction="#add" userData='RESERVATION'
+                                            prefWidth="${reservList.width * (100/3)}" text="Ajouter"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#edit" userData='RESERVATION'
+                                            prefWidth="${reservList.width * (100/3)}" text="Modifier"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#remove" userData='RESERVATION'
+                                            prefWidth="${reservList.width * (100/3)}" text="Supprimer"
+                                            HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                            </VBox>
+                        </AnchorPane>
+                    </TitledPane>
+                    <TitledPane text="Chambres">
+                        <AnchorPane>
+                            <VBox AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0"
+                                  AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-10.0">
+                                <ListView fx:id="roomList" VBox.vgrow="ALWAYS"/>
+                                <HBox>
+                                    <Button onAction="#add" userData='ROOM'
+                                            prefWidth="${roomList.width * (100/3)}" text="Ajouter"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#edit" userData='ROOM'
+                                            prefWidth="${roomList.width * (100/3)}" text="Modifier"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#remove" userData='ROOM'
+                                            prefWidth="${roomList.width * (100/3)}" text="Supprimer"
+                                            HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                            </VBox>
+                        </AnchorPane>
+                    </TitledPane>
+                    <TitledPane text="Clients">
+                        <AnchorPane>
+                            <VBox AnchorPane.bottomAnchor="-10.0" AnchorPane.leftAnchor="-10.0"
+                                  AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="-10.0">
+                                <ListView fx:id="clientList" VBox.vgrow="ALWAYS"/>
+                                <HBox>
+                                    <Button onAction="#add" userData='CLIENT'
+                                            prefWidth="${clientList.width * (100/3)}" text="Ajouter"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#edit" userData='CLIENT'
+                                            prefWidth="${clientList.width * (100/3)}" text="Modifier"
+                                            HBox.hgrow="ALWAYS"/>
+                                    <Button onAction="#remove" userData='CLIENT'
+                                            prefWidth="${clientList.width * (100/3)}" text="Supprimer"
+                                            HBox.hgrow="ALWAYS"/>
+                                </HBox>
+                            </VBox>
+                        </AnchorPane>
+                    </TitledPane>
+                </panes>
+            </Accordion>
+            <VBox/>
+        </SplitPane>
+    </VBox>
+    <AnchorPane styleClass="panel" fx:id="loginPane">
+        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+            <HBox alignment="CENTER">
+                <AnchorPane style="-fx-background-color: -fx-base;-fx-border-radius: 5px;-fx-padding: 10px" onMouseClicked="#consume">
+                    <VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                        <Text>Connexion</Text>
+                        <GridPane VBox.vgrow="ALWAYS" hgap="10" vgap="5">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="10.0" />
+                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" />
+                                <RowConstraints minHeight="10.0" />
+                            </rowConstraints>
+                            <padding>
+                                <Insets top="5" right="5" bottom="5" left="5" />
+                            </padding>
+                            <Label labelFor="$userField" GridPane.columnIndex="0" GridPane.rowIndex="0">Nom d'utilisateur :</Label>
+                            <TextField fx:id="userField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                            <Label labelFor="$passField" GridPane.columnIndex="0" GridPane.rowIndex="1">Mot de passe :</Label>
+                            <PasswordField fx:id="passField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        </GridPane>
+                        <Button onAction="#login">Se Connecter</Button>
+                    </VBox>
+                </AnchorPane>
+            </HBox>
+        </VBox>
+    </AnchorPane>
+    <!--<AnchorPane styleClass="panel" fx:id="reservPanel" onMouseClicked="#hidePanel">-->
+        <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+            <!--<HBox alignment="CENTER">-->
+                <!--<AnchorPane style="-fx-background-color: -fx-base;-fx-border-radius: 5px;-fx-padding: 10px" onMouseClicked="#consume">-->
+                    <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+                        <!--<Text>Réservation</Text>-->
+                        <!--<GridPane VBox.vgrow="ALWAYS" hgap="10" vgap="5">-->
+                            <!--<columnConstraints>-->
+                                <!--<ColumnConstraints minWidth="10.0" />-->
+                                <!--<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />-->
+                            <!--</columnConstraints>-->
+                            <!--<rowConstraints>-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                            <!--</rowConstraints>-->
+                            <!--<padding>-->
+                                <!--<Insets top="5" right="5" bottom="5" left="5" />-->
+                            <!--</padding>-->
+                            <!--&lt;!&ndash;<Label labelFor="$userField" GridPane.columnIndex="0" GridPane.rowIndex="0">Nom d'utilisateur :</Label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<TextField fx:id="userField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<Label labelFor="$passField" GridPane.columnIndex="0" GridPane.rowIndex="1">Mot de passe :</Label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<PasswordField fx:id="passField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>&ndash;&gt;-->
+                        <!--</GridPane>-->
+                        <!--&lt;!&ndash;<Button onAction="#login">Se Connecter</Button>&ndash;&gt;-->
+                    <!--</VBox>-->
+                    <!--<CloseButton AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" userData="$loginPane" onMouseClicked="#hidePanel" translateX="5" translateY="-5"/>-->
+                <!--</AnchorPane>-->
+            <!--</HBox>-->
+        <!--</VBox>-->
+    <!--</AnchorPane>-->
+    <!--<AnchorPane styleClass="panel" fx:id="clientPanel" onMouseClicked="#hidePanel">-->
+        <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+            <!--<HBox alignment="CENTER">-->
+                <!--<AnchorPane style="-fx-background-color: -fx-base;-fx-border-radius: 5px;-fx-padding: 10px" onMouseClicked="#consume">-->
+                    <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+                        <!--<Text>Client</Text>-->
+                        <!--<GridPane VBox.vgrow="ALWAYS" hgap="10" vgap="5">-->
+                            <!--<columnConstraints>-->
+                                <!--<ColumnConstraints minWidth="10.0" />-->
+                                <!--<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />-->
+                            <!--</columnConstraints>-->
+                            <!--<rowConstraints>-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                            <!--</rowConstraints>-->
+                            <!--<padding>-->
+                                <!--<Insets top="5" right="5" bottom="5" left="5" />-->
+                            <!--</padding>-->
+                            <!--<Label labelFor="$userField" GridPane.columnIndex="0" GridPane.rowIndex="0">Nom d'utilisateur :</Label>-->
+                            <!--<TextField fx:id="userField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>-->
+                            <!--<Label labelFor="$passField" GridPane.columnIndex="0" GridPane.rowIndex="1">Mot de passe :</Label>-->
+                            <!--<PasswordField fx:id="passField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>-->
+                        <!--</GridPane>-->
+                        <!--<Button onAction="#login">Se Connecter</Button>-->
+                    <!--</VBox>-->
+                    <!--<CloseButton AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" userData="$loginPane" onMouseClicked="#hidePanel" translateX="5" translateY="-5"/>-->
+                <!--</AnchorPane>-->
+            <!--</HBox>-->
+        <!--</VBox>-->
+    <!--</AnchorPane>-->
+    <!--<AnchorPane styleClass="panel" fx:id="roomPanel" onMouseClicked="#hidePanel">-->
+        <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+            <!--<HBox alignment="CENTER">-->
+                <!--<AnchorPane style="-fx-background-color: -fx-base;-fx-border-radius: 5px;-fx-padding: 10px" onMouseClicked="#consume">-->
+                    <!--<VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">-->
+                        <!--<Text>Room</Text>-->
+                        <!--<GridPane VBox.vgrow="ALWAYS" hgap="10" vgap="5">-->
+                            <!--<columnConstraints>-->
+                                <!--<ColumnConstraints minWidth="10.0" />-->
+                                <!--<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />-->
+                            <!--</columnConstraints>-->
+                            <!--<rowConstraints>-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                                <!--<RowConstraints minHeight="10.0" />-->
+                            <!--</rowConstraints>-->
+                            <!--<padding>-->
+                                <!--<Insets top="5" right="5" bottom="5" left="5" />-->
+                            <!--</padding>-->
+                            <!--<Label labelFor="$userField" GridPane.columnIndex="0" GridPane.rowIndex="0">Nom d'utilisateur :</Label>-->
+                            <!--<TextField fx:id="userField" GridPane.columnIndex="1" GridPane.rowIndex="0"/>-->
+                            <!--<Label labelFor="$passField" GridPane.columnIndex="0" GridPane.rowIndex="1">Mot de passe :</Label>-->
+                            <!--<PasswordField fx:id="passField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>-->
+                        <!--</GridPane>-->
+                        <!--<Button onAction="#login">Se Connecter</Button>-->
+                    <!--</VBox>-->
+                    <!--<CloseButton AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0" userData="$loginPane" onMouseClicked="#hidePanel" translateX="5" translateY="-5"/>-->
+                <!--</AnchorPane>-->
+            <!--</HBox>-->
+        <!--</VBox>-->
+    <!--</AnchorPane>-->
+</StackPane>

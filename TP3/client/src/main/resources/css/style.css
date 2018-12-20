@@ -1,0 +1,4 @@
+.panel { -fx-background-color: rgba(0, 0, 0, 0.5); }
+.panel .anchor-pane { -fx-border-radius: 5px; }
+
+.btn-close { -fx-padding: 0; -fx-background-color: transparent; -fx-border-radius: 50%; -fx-font-size: 24pt; -fx-translate-x: -50%; -fx-translate-y: 50%; }
