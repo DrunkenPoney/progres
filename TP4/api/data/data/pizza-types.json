@@ -1,0 +1,19 @@
+[
+    {
+        "key": "CHEESE",
+        "title": "Fromage",
+        "priceMod": 0.7
+    }, {
+        "key": "PEPPERONI",
+        "title": "Peppéroni",
+        "priceMod": 0.85
+    }, {
+        "key": "ALL_DRESSED",
+        "title": "Garnie",
+        "priceMod": 1
+    }, {
+        "key": "BACON",
+        "title": "Bacon",
+        "priceMod": 0.9
+    }
+]

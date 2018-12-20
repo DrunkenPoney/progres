@@ -1,0 +1,32 @@
+[
+    {
+        "key": "WAITING",
+        "title": "En attente",
+        "order": 0
+    },
+    {
+        "key": "COOKING",
+        "title": "En cuisson",
+        "order": 1
+    },
+    {
+        "key": "READY",
+        "title": "Prête",
+        "order": 2
+    },
+    {
+        "key": "DELIVERING",
+        "title": "En livraison",
+        "order": 3
+    },
+    {
+        "key": "DELIVERED",
+        "title": "Livrée",
+        "order": 4
+    },
+    {
+        "key": "CANCELED",
+        "title": "Annulée",
+        "order": 5
+    }
+]

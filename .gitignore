@@ -35,6 +35,5 @@ temp/
 
 .idea/
 ~$*
-TP4/api/data/node_modules/
-
-TP4/client/dist/
+node_modules/
+dist/

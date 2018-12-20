@@ -1,0 +1,44 @@
+{
+  "name": "@drunk/pm",
+  "version": "1.0.4",
+  "description": "It's newman but easier! :P",
+  "main": "src/lib/index.js",
+  "files": [
+    "src/lib/*"
+  ],
+  "bin": "src/cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/cli.js",
+    "build": "pkg . --out-path ./out -t node10-linux,node10-win,node10-mac"
+  },
+  "author": {
+    "name": "Elie Grenon (DrunkenPoney)",
+    "email": "drunkenponey@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "extend": "latest",
+    "joi": "^14.3.0",
+    "kleur": "latest",
+    "newman": "^4.2.2",
+    "postman-collection": "^3.4.0",
+    "prompts": "^2.0.0",
+    "yargs": "^12.0.5",
+    "got": "latest"
+  },
+  "devDependencies": {
+    "pkg": "^4.3.5"
+  },
+  "keywords": [
+    "newman",
+    "postman",
+    "post",
+    "request",
+    "http",
+    "pm"
+  ],
+  "engines": {
+    "node": "^10"
+  }
+}
