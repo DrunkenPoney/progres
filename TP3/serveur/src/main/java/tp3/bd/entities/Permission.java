@@ -3,19 +3,19 @@ package tp3.bd.entities;
 import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.*;
 
-@Entity("rights")
+@Entity("permissions")
 @SuppressWarnings("unused")
-public class Right extends BaseEntity {
+public class Permission extends BaseEntity {
 	
 	@Indexed(options = @IndexOptions(unique = true))
 	private String key;
 	
-	public Right(@NotNull String key) {
+	public Permission(@NotNull String key) {
 		super();
 		this.key = key;
 	}
 	
-	protected Right() {
+	protected Permission() {
 		super();
 		this.key = null;
 	}

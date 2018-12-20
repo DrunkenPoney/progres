@@ -9,9 +9,10 @@ public final class Constants {
 	
 	public static final String DEFAULT_REGION_CODE       = "fr_CA";
 	
-	public static final URL KEYSTORE = Constants.class.getResource("private_pkcs12.jks");
+//	public static final URL KEYSTORE = Constants.class.getResource("/private_pkcs12.jks");
+//	public static final URL KEYSTORE = Constants.class.getResource("/");
 	public static final char[] KEYSTORE_PASSWORD = "progres".toCharArray();
-	
+	public static final int SSL_PORT = 8443;
 	public static final int MIN_PORT = 0;
 	public static final int MAX_PORT = 65535;
 }

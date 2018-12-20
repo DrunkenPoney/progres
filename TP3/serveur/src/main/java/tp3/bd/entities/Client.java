@@ -19,7 +19,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @SuppressWarnings("unused")
 public class Client extends BaseEntity {
 	
-	private String firstName, lastName;
+	@Property("first_name")
+	private String firstName;
+	
+	@Property("last_name")
+	private String lastName;
 	
 	@Indexed(options = @IndexOptions(unique = true))
 	private String      email;
@@ -30,11 +34,11 @@ public class Client extends BaseEntity {
 	@Reference
 	private List<Reservation> reservations;
 	
-	public Client(String firstName, String lastName, String email) {
+	public Client(@NotNull String firstName, @NotNull String lastName, @NotNull String email) {
 		this(firstName, lastName, email, null);
 	}
 	
-	public Client(String firstName, String lastName, String email, @Nullable PhoneNumber tel) {
+	public Client(@NotNull String firstName, @NotNull String lastName, @NotNull String email, @Nullable PhoneNumber tel) {
 		this();
 		setFirstName(firstName);
 		setLastName(lastName);

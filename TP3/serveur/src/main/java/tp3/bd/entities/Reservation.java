@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.mongodb.morphia.annotations.*;
 
 import java.sql.Date;
-import java.time.Instant;
 import java.time.Period;
 
 @Entity("reservations")
@@ -13,6 +12,7 @@ import java.time.Period;
 		@Field("room"),
 		@Field("startDate")
 }, options = @IndexOptions(unique = true)))
+@Validation("{ room: { $min: 1 } }")
 @SuppressWarnings("unused")
 public class Reservation extends BaseEntity {
 	@Reference
@@ -21,8 +21,8 @@ public class Reservation extends BaseEntity {
 	private final int    room;
 	private       Date   startDate, endDate;
 	
-	public Reservation(int room, @NotNull Client client, @NotNull Instant startDate,
-	                   @NotNull Instant endDate) throws InvalidPeriodException {
+	public Reservation(int room, @NotNull Client client, @NotNull Date startDate,
+	                   @NotNull Date endDate) throws InvalidPeriodException {
 		super();
 		this.client = client;
 		this.room = room;
@@ -45,23 +45,23 @@ public class Reservation extends BaseEntity {
 		return room;
 	}
 	
-	public Instant getStartDate() {
-		return this.startDate.toInstant();
+	public Date getStartDate() {
+		return this.startDate;
 	}
 	
-	public Instant getEndDate() {
-		return this.endDate.toInstant();
+	public Date getEndDate() {
+		return this.endDate;
 	}
 	
 	public Period getPeriod() {
 		return Period.between(this.startDate.toLocalDate(), this.endDate.toLocalDate());
 	}
 	
-	public void setPeriod(@NotNull Instant startDate, @NotNull Instant endDate) throws InvalidPeriodException {
-		if (!startDate.isBefore(endDate))
+	public void setPeriod(@NotNull Date startDate, @NotNull Date endDate) throws InvalidPeriodException {
+		if (!startDate.toInstant().isBefore(endDate.toInstant()))
 			throw new InvalidPeriodException("La date de début doit être antérieur à la date de fin.");
-		this.startDate = new Date(startDate.toEpochMilli());
-		this.endDate = new Date(endDate.toEpochMilli());
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
 	
 	public static class InvalidPeriodException extends Exception {

@@ -4,10 +4,15 @@ import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tp3.Constants;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -20,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static java.lang.Math.max;
+import static java.nio.file.StandardOpenOption.READ;
 import static tp3.Constants.*;
 import static tp3.utils.Utils.randomLocalSocket;
 
@@ -28,8 +34,8 @@ public class SSLConnectionManager {
 	
 	static {
 		try {
-			KeyStore keyStore = KeyStore.getInstance("pkcs12");
-			keyStore.load(KEYSTORE.openStream(), KEYSTORE_PASSWORD);
+			KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+			keyStore.load(Files.newInputStream(Paths.get("private.jks"), READ), KEYSTORE_PASSWORD);
 			
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 			tmf.init(keyStore);
@@ -38,31 +44,25 @@ public class SSLConnectionManager {
 			kmf.init(keyStore, KEYSTORE_PASSWORD);
 			
 			System.setProperty("https.protocols", "SSL");
-			
 			SSL_CONTEXT = SSLContext.getInstance("SSL");
 			SSL_CONTEXT.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
-			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	@Nullable
-	public static SSLConnectionListener openSocket() {
-		try {
-			SSLServerSocket socket = (SSLServerSocket)
-					SSL_CONTEXT.getServerSocketFactory()
-					           .createServerSocket(randomLocalSocket(MIN_PORT, MAX_PORT).getPort());
-			socket.setNeedClientAuth(true);
-			return new SSLConnectionListener(socket);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static SSLConnectionListener openSocket() throws IOException {
+		SSLServerSocket socket = (SSLServerSocket)
+				SSL_CONTEXT.getServerSocketFactory()
+				           .createServerSocket(SSL_PORT);
+		socket.setNeedClientAuth(true);
+		SSLConnectionListener listener = new SSLConnectionListener(socket);
+		listener.addHandler(new ConnectionHandler());
+		return listener;
 	}
 	
 	
-	private static class SSLConnectionListener implements Runnable {
+	public static class SSLConnectionListener implements Runnable {
 		private final    SSLServerSocket           socket;
 		private final    Set<SSLSocket>            connections;
 		private final    List<Consumer<SSLSocket>> handlers;

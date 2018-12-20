@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <artifactId>progres-tp3-client</artifactId>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
     
     <parent>
         <artifactId>progres-tp3-parent</artifactId>
@@ -17,6 +18,17 @@
             <artifactId>rxjavafx</artifactId>
             <version>2.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>11</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>11</version>
+        </dependency>
     </dependencies>
     
     <build>
@@ -28,30 +40,46 @@
                 <configuration>
                     <source>${compiler.version}</source>
                     <target>${compiler.version}</target>
+                    <release>${compiler.version}</release>
                 </configuration>
             </plugin>
-            
-            <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPILE-SCSS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
             <plugin>
-                <groupId>com.github.warmuuh</groupId>
-                <artifactId>libsass-maven-plugin</artifactId>
-                <version>0.2.10-libsass_3.5.3</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>compile</goal>
+                            <goal>java</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <inputPath>${basedir}/src/main/resources/css/</inputPath>
-                    <outputPath>${basedir}/target/classes/css/</outputPath>
-                    <outputStyle>compact</outputStyle>
-                    <generateSourceMap>false</generateSourceMap>
-                    <inputSyntax>scss</inputSyntax>
+                    <mainClass>${application.main.class}</mainClass>
                 </configuration>
             </plugin>
+            
+            <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> COMPILE-SCSS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+            <!--<plugin>-->
+                <!--<groupId>com.github.warmuuh</groupId>-->
+                <!--<artifactId>libsass-maven-plugin</artifactId>-->
+                <!--<version>0.2.10-libsass_3.5.3</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>generate-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>compile</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<inputPath>${basedir}/src/main/resources/css/</inputPath>-->
+                    <!--<outputPath>${basedir}/target/classes/css/</outputPath>-->
+                    <!--<outputStyle>compact</outputStyle>-->
+                    <!--<generateSourceMap>false</generateSourceMap>-->
+                    <!--<inputSyntax>scss</inputSyntax>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
     
             <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> BUILD-JAR <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
             <plugin>
@@ -67,60 +95,65 @@
                         </manifestEntries>
                         <manifest>
                             <addClasspath>true</addClasspath>
+                            <mainClass>${application.main.class}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
     
             <!-->>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ANTRUN-SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <!-- define the deploy ANT task -->
-                                <taskdef name="jfxdeploy" classname="com.sun.javafx.tools.ant.DeployFXTask"
-                                         classpathref="maven.plugin.classpath"/>
-                        
-                                <!-- define the JarSing ANT task -->
-                                <!-- taskdef name="jfxsignjar" classname="com.sun.javafx.tools.ant.FXSignJarTask"
-                                    classpathref="maven.plugin.classpath" / -->
-                                <jfxdeploy outdir="${project.build.directory}/deploy"
-                                           outfile="${build.finalName}" nativeBundles="all">
-                                    <info title="${application.name}"/>
-                                    <!-- set the main class of your applcation -->
-                                    <application name="${application.name}"
-                                                 mainClass="${application.main.class}"/>
-                                    <resources>
-                                        <fileset dir="${project.build.directory}" includes="*.jar"/>
-                                        <fileset dir="${project.build.directory}/dependency"
-                                                 includes="*.jar"/>
-                                        <!--<fileset dir="${project.build.directory}/properties" includes="*.properties"/>-->
-                                    </resources>
-                            
-                                    <!-- set your jvm args -->
-                                    <platform>
-                                        <jvmarg value="-Xms512m"/>
-                                        <jvmarg value="-Xmx1024m"/>
-                                    </platform>
-                                </jfxdeploy>
-                                <!-- you need to generate a key yourself -->
-                                <!--jfxsignjar destdir="${project.build.directory}/deploy" keyStore="path/to/your/keystore"
-                                    storePass="yourPass" alias="yourAlias" keyPass="keyPass"> <fileset dir="${project.build.directory}/deploy"
-                                    includes="*.jar" /> </jfxsignjar -->
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-antrun-plugin</artifactId>-->
+                <!--<version>1.8</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>package</phase>-->
+                        <!--<configuration>-->
+                            <!--<target>-->
+                                <!--&lt;!&ndash; define the deploy ANT task &ndash;&gt;-->
+                                <!--<taskdef name="jfxdeploy" classname="com.sun.javafx.tools.ant.DeployFXTask"-->
+                                         <!--classpathref="maven.plugin.classpath"/>-->
+                        <!---->
+                                <!--&lt;!&ndash; define the JarSing ANT task &ndash;&gt;-->
+                                <!--&lt;!&ndash; taskdef name="jfxsignjar" classname="com.sun.javafx.tools.ant.FXSignJarTask"-->
+                                    <!--classpathref="maven.plugin.classpath" / &ndash;&gt;-->
+                                <!--<jfxdeploy outdir="${project.build.directory}/deploy"-->
+                                           <!--outfile="${build.finalName}" nativeBundles="all">-->
+                                    <!--<info title="${application.name}"/>-->
+                                    <!--&lt;!&ndash; set the main class of your applcation &ndash;&gt;-->
+                                    <!--<application name="${application.name}"-->
+                                                 <!--mainClass="${application.main.class}"/>-->
+                                    <!--<resources>-->
+                                        <!--<fileset dir="${project.build.directory}" includes="*.jar"/>-->
+                                        <!--<fileset dir="${project.build.directory}/dependency"-->
+                                                 <!--includes="*.jar"/>-->
+                                        <!--&lt;!&ndash;<fileset dir="${project.build.directory}/properties" includes="*.properties"/>&ndash;&gt;-->
+                                    <!--</resources>-->
+                            <!---->
+                                    <!--&lt;!&ndash; set your jvm args &ndash;&gt;-->
+                                    <!--<platform>-->
+                                        <!--<jvmarg value="-Xms512m"/>-->
+                                        <!--<jvmarg value="-Xmx1024m"/>-->
+                                    <!--</platform>-->
+                                <!--</jfxdeploy>-->
+                                <!--&lt;!&ndash; you need to generate a key yourself &ndash;&gt;-->
+                                <!--&lt;!&ndash;jfxsignjar destdir="${project.build.directory}/deploy" keyStore="path/to/your/keystore"-->
+                                    <!--storePass="yourPass" alias="yourAlias" keyPass="keyPass"> <fileset dir="${project.build.directory}/deploy"-->
+                                    <!--includes="*.jar" /> </jfxsignjar &ndash;&gt;-->
+                            <!--</target>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>run</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
         </plugins>
     </build>
+    
+    <properties>
+        <application.main.class>tp3.controllers.MainController</application.main.class>
+    </properties>
 
 </project>

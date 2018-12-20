@@ -4,7 +4,6 @@ import org.mongodb.morphia.annotations.Id;
 
 @SuppressWarnings("unused")
 public abstract class BaseEntity {
-	
 	@Id
 	private final Long id;
 	
@@ -12,9 +11,7 @@ public abstract class BaseEntity {
 		id = null;
 	}
 	
-	@SuppressWarnings("ConstantConditions")
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	
 }
